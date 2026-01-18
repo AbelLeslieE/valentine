@@ -3,206 +3,299 @@
 <head>
   <meta charset="UTF-8">
   <title>Will You Be My Valentine?</title>
-
-  <!-- 📱 Mobile friendly -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      font-family: "Segoe UI", Arial, sans-serif;
-      overflow: hidden;
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
 
-      /* 🌸 Romantic animated background */
-      background: linear-gradient(135deg, #ffe6eb, #fff1f5, #ffd6e0);
-      background-size: 400% 400%;
-      animation: bgMove 15s ease infinite;
-    }
+    /* ✅ allow vertical scroll on small devices */
+    overflow-x: hidden;
 
-    @keyframes bgMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+    background: linear-gradient(135deg, #ffe6eb, #fff1f5, #ffd6e0);
+    background-size: 400% 400%;
+    animation: bgMove 15s ease infinite;
+  }
 
-    .center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
+  @keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
-    /* 💎 Romantic card */
-    .card {
-      text-align: center;
-      padding: 50px 42px;
-      border-radius: 28px;
-      width: 360px;
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(14px);
 
-      box-shadow: 0 25px 50px rgba(255, 105, 135, 0.25);
-      z-index: 2;
-    }
+  .card {
+    text-align: center;
+    padding: 50px 40px;
+    border-radius: 28px;
+    width: 360px;
+    max-width: 90vw;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 25px 50px rgba(255, 105, 135, 0.25);
+    z-index: 2;
+  }
 
-    h1 {
-      color: #8b1e1e;
-      margin-bottom: 30px;
-      font-size: 26px;
-    }
+  h1 {
+    color: #8b1e1e;
+    margin-bottom: 30px;
+    font-size: clamp(20px, 5vw, 26px);
+  }
 
-    .bunny {
-      font-size: 80px;
-      margin-bottom: 35px;
-    }
+  .bunny {
+    font-size: 80px;
+    margin-bottom: 35px;
+  }
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-top: 40px;
-      align-items: center;
-    }
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 40px;
+    align-items: center;
+  }
 
-    button {
-      border: none;
-      padding: 15px 36px;
-      font-size: 18px;
-      border-radius: 40px;
-      cursor: pointer;
-      color: white;
-    }
+  button {
+    border: none;
+    padding: clamp(12px,3vw,15px) clamp(26px,6vw,36px);
+    font-size: clamp(16px,4vw,18px);
+    border-radius: 40px;
+    cursor: pointer;
+    color: white;
+  }
 
-    /* 💓 YES heartbeat */
-    @keyframes heartbeat {
-      0% { transform: scale(1); }
-      25% { transform: scale(1.15); }
-      50% { transform: scale(1); }
-      75% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
+  /* 💓 YES heartbeat */
+  @keyframes heartbeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.15); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
 
-    .yes {
-      background: linear-gradient(135deg, #ff5f8a, #ff2f68);
-      animation: heartbeat 1.5s infinite;
-    }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 rgba(255,95,138,0.6); }
+  50% { box-shadow: 0 0 25px rgba(255,95,138,0.8); }
+  100% { box-shadow: 0 0 0 rgba(255,95,138,0.6); }
+}
 
-    .yes-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-width: 130px;
-      transition: transform 0.6s ease;
-    }
+.yes {
+  background: linear-gradient(135deg, #ff5f8a, #ff2f68);
+  animation: pulse 1.6s infinite;
+}
 
-    .no {
-      background: linear-gradient(135deg, #8fd3a8, #5cbf8a);
-      transition: transform 0.3s ease, opacity 0.4s ease;
-      min-width: 130px;
-    }
 
-    /* 🤭 Shake */
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      50% { transform: translateX(4px); }
-      75% { transform: translateX(-4px); }
-      100% { transform: translateX(0); }
-    }
+  .yes-wrapper {
+    transition: transform 0.6s ease;
+    min-width: 130px;
+  }
 
-    .card.shake {
-      animation: shake 0.3s;
-    }
+  .no {
+    background: linear-gradient(135deg, #8fd3a8, #5cbf8a);
+    transition: transform 0.3s ease, opacity 0.4s ease;
+    min-width: 130px;
+  }
 
-    /* 💕 Falling hearts */
-    .falling-heart {
-      position: absolute;
-      top: -40px;
-      font-size: 24px;
-      animation: fall 7s linear forwards;
-      pointer-events: none;
-      opacity: 0.8;
-    }
+  /* 🤭 Card shake */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+  }
 
-    @keyframes fall {
-      to {
-        transform: translateY(120vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
+  .card.shake {
+    animation: shake 0.3s;
+  }
 
-    /* 💥 Burst hearts */
-    .heart {
-      position: absolute;
-      font-size: 24px;
-      animation: floatUp 3s linear forwards;
-      pointer-events: none;
-    }
+  /* 💕 Falling hearts */
+  .falling-heart {
+    position: absolute;
+    top: -40px;
+    font-size: 24px;
+    animation: fall 7s linear forwards;
+    pointer-events: none;
+    opacity: 0.8;
+  }
 
-    @keyframes floatUp {
-      to {
-        transform: translateY(-300px) scale(1.8);
-        opacity: 0;
-      }
-    }
-
-    /* 📸 Your photo */
-    #myPhoto {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-
+  @keyframes fall {
+    to {
+      transform: translateY(120vh) rotate(360deg);
       opacity: 0;
-      transform: scale(0.8);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-
-      box-shadow: 0 14px 35px rgba(255, 80, 120, 0.6);
-      z-index: 5;
     }
-  </style>
+  }
+
+  /* 💥 Burst hearts */
+  .heart {
+    position: absolute;
+    font-size: 24px;
+    animation: floatUp 3s linear forwards;
+    pointer-events: none;
+  }
+
+  @keyframes floatUp {
+    to {
+      transform: translateY(-300px) scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  /* 📸 FULL PHOTO OVERLAY */
+  #photoOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 230, 235, 0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    z-index: 10;
+  }
+
+  #photoOverlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #photoOverlay img {
+    max-width: 85vw;
+    max-height: 85vh;
+    border-radius: 20px;
+    object-fit: contain;
+    box-shadow: 0 25px 60px rgba(255, 80, 120, 0.5);
+    animation: popIn 0.6s ease;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* 🌿 Soft verse reveal */
+  @keyframes verseFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .verse-container {
+    margin-top: 35px;
+    max-width: 650px;
+    padding: 0 20px;
+
+    opacity: 0;
+    animation: verseFadeIn 3s ease forwards;
+    animation-delay: 2s;
+  }
+
+  .verse-text {
+    font-size: clamp(16px, 4.5vw, 20px);
+    color: #7a1f2b;
+    line-height: 1.8;
+    font-style: italic;
+    letter-spacing: 0.3px;
+  }
+
+  .verse-ref {
+    margin-top: 14px;
+    font-size: 15px;
+    color: #b85b6b;
+    letter-spacing: 1px;
+  }
+
+  /* ✨ Required animations used in JS */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* 🔒 FORCE BUTTONS TO BE CLICKABLE */
+.yes,
+.no {
+  position: relative;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+/* 🧱 Ensure wrapper does not block clicks */
+.yes-wrapper {
+  pointer-events: auto;
+  position: relative;
+  z-index: 50;
+}
+
+/* 🚫 Absolutely nothing decorative should capture clicks */
+.falling-heart,
+.heart,
+#photoOverlay {
+  pointer-events: none;
+}
+
+</style>
+
 </head>
 
 <body>
 
-  <div class="card center">
+  <div class="card">
     <h1>Will you be my Valentine? ❤️</h1>
     <div class="bunny">🐰</div>
 
     <div class="buttons">
-      <div class="yes-wrapper">
+      <div class="yes-wrapper" style="pointer-events:auto;">
         <button class="yes" onclick="yesClicked()">YES</button>
       </div>
       <button class="no" onclick="noClicked()">NO</button>
     </div>
   </div>
 
-  <!-- 📸 Your photo -->
-  <img id="myPhoto" src="" alt="Me">
+  <!-- Full image overlay -->
+  <div id="photoOverlay">
+    <img id="overlayImage" src="" alt="Me">
+  </div>
 
 <script>
   let yesScale = 1;
   let noMoves = 0;
   const maxNoClicks = 6;
 
-/* 📸 ADD YOUR PHOTOS HERE (must match GitHub filenames exactly) */
-const myPhotos = [
-  "photo1.jpg",
-  "photo2.jpg",
-  "photo3.jpg",
-  "photo4.jpg",
-  "photo5.jpg"
-];
+  const myPhotos = [
+    "photo1.jpg",
+    "photo2.jpg",
+    "photo3.jpg",
+    "photo4.jpg",
+    "photo5.jpg"
+  ];
+  let photoIndex = 0;
 
-let photoIndex = 0;
-
-
-  /* 💕 Falling hearts forever */
+  /* Falling hearts */
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "falling-heart";
@@ -212,23 +305,173 @@ let photoIndex = 0;
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 7000);
   }, 300);
+function yesClicked() {
 
-  function yesClicked() {
-    document.body.innerHTML = `
-      <div class="center" style="
-        height:100vh;
-        width:100vw;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        flex-direction:column;
-        background:linear-gradient(135deg,#ffe6eb,#ffd1dc);
+  document.body.innerHTML = `
+    <div style="
+      min-height:100vh;
+      width:100vw;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      background:linear-gradient(135deg,#ffe6eb,#ffd1dc);
+      font-family:'Segoe UI', Arial, sans-serif;
+      animation: fadeIn 2s ease;
+      padding:40px 20px;
+      overflow-y:auto;
+    ">
+
+      <h1 style="
+        font-size:clamp(32px,7vw,52px);
+        color:#ff2f68;
+        margin-bottom:25px;
+        font-weight:500;
+        animation: rise 1.5s ease;
       ">
-        <h1 style="font-size:64px;color:#ff2f68;">YAYYY!!! 💖</h1>
-        <p style="font-size:26px;">You just made my day 🥰</p>
+        This moment means everything 💖
+      </h1>
+
+      <p style="
+        font-size:clamp(16px,4vw,20px);
+        color:#a04454;
+        margin-bottom:18px;
+        animation: fadeIn 2.5s ease;
+      ">
+        A love built on faith, trust, and grace
+      </p>
+
+      <div class="verse-container">
+        <div class="verse-text">
+          “സ്നേഹം എല്ലാം സഹിക്കുന്നു,<br>
+          എല്ലാം വിശ്വസിക്കുന്നു,<br>
+          എല്ലാം പ്രതീക്ഷിക്കുന്നു,<br>
+          എല്ലാം സഹിക്കുന്നു.<br>
+          സ്നേഹം ഒരിക്കലും അവസാനിക്കുന്നില്ല.”
+        </div>
+        <div class="verse-ref">
+          — 1 കൊരിന്ത്യർ 13:7–8
+        </div>
       </div>
-    `;
-  }
+
+      <img src="photo1.jpg" style="
+        width:180px;
+        height:180px;
+        border-radius:50%;
+        object-fit:cover;
+        box-shadow:0 20px 50px rgba(255,80,120,0.5);
+        animation: popIn 1.5s ease;
+        margin:40px 0 30px;
+      ">
+
+      <button onclick="openLetter()" style="
+        margin-top:10px;
+        padding:14px 34px;
+        font-size:16px;
+        border-radius:30px;
+        border:none;
+        cursor:pointer;
+        background:linear-gradient(135deg,#ff9ab5,#ff5f8a);
+        color:white;
+        box-shadow:0 12px 30px rgba(255,80,120,0.4);
+        animation: fadeIn 4s ease;
+      ">
+        💌 Read my letter
+      </button>
+
+      <p style="
+        margin-top:25px;
+        font-size:18px;
+        color:#ff5f8a;
+        animation: fadeIn 5s ease;
+      ">
+        ❤️ This is just the beginning ❤️
+      </p>
+
+    </div>
+  `;
+}
+
+function openLetter() {
+  document.body.innerHTML = `
+    <div style="
+      min-height:100vh;
+      width:100vw;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(135deg,#fff1f5,#ffe6eb);
+      font-family:'Segoe UI', Arial, sans-serif;
+      padding:40px 20px;
+      overflow-y:auto;
+      animation: fadeIn 1.5s ease;
+    ">
+
+      <div style="
+        max-width:700px;
+        background:rgba(255,255,255,0.75);
+        backdrop-filter:blur(12px);
+        border-radius:24px;
+        padding:40px 30px;
+        box-shadow:0 30px 60px rgba(255,80,120,0.25);
+      ">
+
+        <h2 style="
+          color:#ff2f68;
+          text-align:center;
+          font-weight:500;
+          margin-bottom:30px;
+        ">
+          My letter to you 💖
+        </h2>
+
+        <p style="
+          font-size:18px;
+          color:#7a1f2b;
+          line-height:1.9;
+          white-space:pre-line;
+        ">
+Dear my love,
+
+This is where YOU write your message.
+
+Write honestly.
+Write softly.
+Write what your heart says.
+
+Tell her why she matters.
+Tell her what you feel.
+Tell her what you hope for.
+
+No filters.
+No perfection.
+Just you.
+
+Forever yours,
+— (Your Name)
+        </p>
+
+        <!-- 🔙 Back button -->
+        <div style="text-align:center; margin-top:35px;">
+          <button onclick="yesClicked()" style="
+            padding:12px 30px;
+            font-size:15px;
+            border-radius:25px;
+            border:none;
+            cursor:pointer;
+            background:#ffd1dc;
+            color:#8b1e1e;
+          ">
+            ← Back
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
 
   function burstHearts(x, y, count) {
     for (let i = 0; i < count; i++) {
@@ -246,29 +489,28 @@ let photoIndex = 0;
     const noBtn = document.querySelector(".no");
     const card = document.querySelector(".card");
     const yesWrapper = document.querySelector(".yes-wrapper");
-    const myPhoto = document.getElementById("myPhoto");
 
     card.classList.add("shake");
     setTimeout(() => card.classList.remove("shake"), 300);
 
-    // YES grows
     yesScale += 0.4;
-    yesWrapper.style.transform = `scale(${yesScale})`;
+    const yesBtn = document.querySelector(".yes");
+    yesBtn.style.transform = `scale(${yesScale})`;
 
-    // 💥 hearts burst
     const r = noBtn.getBoundingClientRect();
     burstHearts(r.left + r.width / 2, r.top + r.height / 2, 40);
 
-    // 📸 change photo
-    myPhoto.src = myPhotos[photoIndex];
-    myPhoto.style.opacity = "1";
-    myPhoto.style.transform = "scale(1)";
+    const overlay = document.getElementById("photoOverlay");
+    const overlayImg = document.getElementById("overlayImage");
+    overlayImg.src = myPhotos[photoIndex];
+    overlay.classList.add("show");
+
     photoIndex = (photoIndex + 1) % myPhotos.length;
 
-    // 🐰 NO moves slightly
+    setTimeout(() => overlay.classList.remove("show"), 2500);
+
     noMoves++;
-    noBtn.style.transform =
-      `translate(${noMoves * 10}px, ${noMoves * 6}px)`;
+    noBtn.style.transform = `translate(${noMoves * 10}px, ${noMoves * 6}px)`;
 
     if (noMoves >= maxNoClicks) {
       noBtn.style.opacity = "0";
@@ -279,4 +521,3 @@ let photoIndex = 0;
 
 </body>
 </html>
-
