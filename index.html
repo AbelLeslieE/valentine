@@ -228,6 +228,30 @@
       0 0 0 6px #fff;
   }
 
+  /* 🎬 Final NO video gate */
+  #finalNoVideoOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  #finalNoVideoOverlay.show {
+    display: flex;
+  }
+
+  #finalNoVideo {
+    width: min(92vw, 520px);
+    max-height: 82vh;
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    background: #000;
+  }
+
 
 
   @keyframes popIn {
@@ -354,6 +378,7 @@ button {
   let noMoves = 0;
   const maxNoClicks = 6;
   const finalNoImage = "final_no.jpg"; // image shown ONLY on last NO
+  const finalNoVideo = "final_no.mp4"; // video shown on last NO before final state
   const yesImage = "yes.jpg";          // image shown on YES
   
   /* 📸 Photos */
@@ -769,16 +794,56 @@ function noClicked() {
 
   /* 📸 SHOW IMAGE ONLY ON LAST NO */
   if (noMoves === maxNoClicks) {
-    const overlay = document.getElementById("photoOverlay");
-    const overlayImg = document.getElementById("overlayImage");
+    playFinalNoVideoThenContinue(() => {
+      const overlay = document.getElementById("photoOverlay");
+      const overlayImg = document.getElementById("overlayImage");
 
-    overlayImg.src = finalNoImage;
-    overlay.classList.add("show");
+      overlayImg.src = finalNoImage;
+      overlay.classList.add("show");
 
-    setTimeout(() => overlay.classList.remove("show"), 2500);
+      setTimeout(() => overlay.classList.remove("show"), 2500);
 
-    noBtn.style.opacity = "0";
-    setTimeout(() => noBtn.remove(), 400);
+      noBtn.style.opacity = "0";
+      setTimeout(() => noBtn.remove(), 400);
+    });
+  }
+}
+
+function playFinalNoVideoThenContinue(onDone) {
+  let overlay = document.getElementById("finalNoVideoOverlay");
+  let video = document.getElementById("finalNoVideo");
+
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "finalNoVideoOverlay";
+    overlay.innerHTML = `
+      <video id="finalNoVideo" playsinline preload="auto" controls>
+        <source src="${finalNoVideo}" type="video/mp4">
+      </video>
+    `;
+    document.body.appendChild(overlay);
+    video = document.getElementById("finalNoVideo");
+  }
+
+  const finish = () => {
+    overlay.classList.remove("show");
+    video.pause();
+    video.currentTime = 0;
+    if (onDone) onDone();
+  };
+
+  video.onended = finish;
+  video.onerror = () => {
+    console.warn("Could not load final_no.mp4, continuing without video.");
+    finish();
+  };
+
+  overlay.classList.add("show");
+  const playPromise = video.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      console.warn("Autoplay blocked for final_no.mp4. Waiting for manual play.");
+    });
   }
 }
 
