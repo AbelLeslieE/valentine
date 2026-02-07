@@ -485,10 +485,6 @@ button {
     </div>
   </div>
 
-  <!-- Full image overlay -->
-  <div id="photoOverlay">
-    <img id="overlayImage" src="" alt="Me">
-  </div>
   <!-- 🎥 Video Overlay -->
   <div id="videoOverlay">
     <video id="noVideo" playsinline muted autoplay preload="auto">
@@ -502,16 +498,10 @@ button {
   let yesScale = 1;
   let noMoves = 0;
   const maxNoClicks = 6;
-  const finalNoImage = "final_no.jpg"; // image shown ONLY on last NO
-  const yesImage = "yes.jpg";          // image shown on YES
   
   /* 📸 Photos */
   const myPhotos = [
-    "photo1.jpg",
-    "photo2.jpg",
-    "photo3.jpg",
-    "photo4.jpg",
-    "photo5.jpg"
+    "photo1.gif",
   ];
   let photoIndex = 0;
 
@@ -549,15 +539,7 @@ button {
 let letterStage = 0;
 
 function yesClicked() {
-  const overlay = document.getElementById("photoOverlay");
-  const overlayImg = document.getElementById("overlayImage");
 
-  // ✅ Only show image if overlay still exists
-  if (overlay && overlayImg) {
-    overlayImg.src = yesImage;
-    overlay.classList.add("show");
-    setTimeout(() => overlay.classList.remove("show"), 2500);
-  }
 
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
@@ -611,7 +593,7 @@ function yesClicked() {
       </div>
     </div>
 
-    <img src="photo1.jpg" style="
+    <img src="photo1.gif" style="
       width:180px;
       height:180px;
       border-radius:50%;
@@ -985,15 +967,6 @@ function noClicked() {
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
 
-
-        const overlay = document.getElementById("photoOverlay");
-        const overlayImg = document.getElementById("overlayImage");
-
-        if (overlay && overlayImg) {
-          overlayImg.src = finalNoImage;
-          overlay.classList.add("show");
-          setTimeout(() => overlay.classList.remove("show"), 2500);
-        }
       };
     }
   }
