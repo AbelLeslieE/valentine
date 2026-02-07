@@ -125,9 +125,114 @@
   }
 
   .bunny {
-    font-size: 80px;
     margin-bottom: 35px;
   }
+
+  .bunny img {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    animation: bunnyJump 1.6s ease-in-out infinite;
+  }
+  @keyframes bunnyJump {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+
+    25% {
+      transform: translateY(-12px) scale(1.04);
+    }
+
+    50% {
+      transform: translateY(-25px) scale(1.08);
+    }
+
+    75% {
+      transform: translateY(-12px) scale(1.04);
+    }
+  }
+/* 🐰 Side Bunny (hidden initially) */
+#sideBunny {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  z-index: 10;
+  opacity: 0;
+  transform: translateX(40px) scale(0.8);
+  transition: all 0.4s ease;
+  pointer-events: none;
+}
+
+/* When first NO is clicked */
+#sideBunny.show {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+#sideBunny img {
+  width: 120px;
+  height: auto;
+}
+/* Reaction GIF inside card */
+#reactionContainer {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height: 120px; /* reserve space so it shows */
+}
+/* First NO gif area (below text) */
+#reactionContainer {
+  text-align: center;
+  margin: 10px 0;
+  min-height: 120px;
+}
+
+/* Floating reactions near text */
+.floating-reaction {
+  position: absolute;
+  width: 90px;
+  pointer-events: none;
+  animation: floatReaction 1.5s ease forwards;
+}
+
+@keyframes floatReaction {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(10px);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) translateY(-20px);
+  }
+}
+
+/* Make card a positioning reference */
+.card {
+  position: relative;
+}
+
+
+.reaction-gif {
+  width: 110px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  animation: reactionPop 0.4s ease;
+}
+
+
+@keyframes reactionPop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
 
   .buttons {
     display: flex;
@@ -365,7 +470,12 @@ button {
 
   <div class="card">
     <h1 id="mainQuestion"></h1>
-    <div class="bunny">🐰</div>
+    <div id="reactionContainer"></div>
+    <div class="bunny" id="mainBunny">
+    <img id="bunnyImg" src="bunny.gif" alt="bunny">
+  </div>
+
+  
 
     <div class="buttons">
       <div class="yes-wrapper" style="pointer-events:auto;">
@@ -381,10 +491,11 @@ button {
   </div>
   <!-- 🎥 Video Overlay -->
   <div id="videoOverlay">
-    <video id="noVideo" playsinline muted preload="auto">
+    <video id="noVideo" playsinline muted autoplay preload="auto">
       <source src="last_no_video.mp4" type="video/mp4">
     </video>
   </div>
+    
 
   <script>
   let hasReadRealLetter = false;
@@ -777,10 +888,9 @@ const noMessages = [
 
 function noClicked() {
   if (noMoves >= maxNoClicks) return;
-
+  const card = document.querySelector(".card");
   const noBtn = document.querySelector(".no");
   const yesBtn = document.querySelector(".yes");
-  const card = document.querySelector(".card");
   const question = document.getElementById("mainQuestion");
 
   /* 🤭 Shake card */
@@ -804,6 +914,39 @@ function noClicked() {
 
   /* 🏃 Move NO button */
   noMoves++;
+  const container = document.getElementById("reactionContainer");
+  const bunny = document.getElementById("mainBunny");
+
+  const reactionGifs = [
+    "first_no.gif",
+    "no2.gif",
+    "no3.gif",
+    "no4.gif",
+    "no5.gif",
+    "final_no.gif",
+  ];
+
+  // Remove bunny after first NO
+  if (noMoves === 1 && bunny) {
+    bunny.style.display = "none";
+  }
+
+  if (container) {
+    let gifIndex;
+
+    // Last NO → show final gif
+    if (noMoves >= maxNoClicks) {
+      gifIndex = reactionGifs.length - 1;
+    } else {
+      gifIndex = Math.min(noMoves - 1, reactionGifs.length - 2);
+    }
+
+    container.innerHTML = `
+      <img src="${reactionGifs[gifIndex]}?${Date.now()}" 
+          style="width:130px; display:block; margin:0 auto;">
+    `;
+  }
+
   if (noBtn) {
     noBtn.style.transition = "transform 0.35s ease-out";
     noBtn.style.transform = `
@@ -828,8 +971,14 @@ function noClicked() {
       document.body.style.overflow = "hidden";
 
 
+      video.muted = true;        // important for mobile
+      video.playsInline = true;  // iOS fix
       video.currentTime = 0;
-      video.play().catch(() => {});
+
+      video.play().catch(err => {
+        console.log("Video play blocked:", err);
+      });
+
 
       video.onended = () => {
         videoOverlay.classList.remove("show");
