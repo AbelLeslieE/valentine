@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Will You Be My Valentine?</title>
+  <title>VAL??</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   body {
@@ -21,6 +22,55 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.6s ease forwards;
+  pointer-events: none;
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background: #7a1f2b;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+  vertical-align: bottom;
+}
+.quiet-text {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #b85b6b;
+  font-style: italic;
+  opacity: 0;
+  animation: quietFadeIn 1.2s ease forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes quietFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -147,31 +197,38 @@
   /* 📸 FULL PHOTO OVERLAY */
   #photoOverlay {
     position: fixed;
-    inset: 0;
-    background: rgba(255, 230, 235, 0.9);
-    backdrop-filter: blur(8px);
+    top: 18%;
+    right: 20px;
+
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
+
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.6s ease;
-    z-index: 10;
+    pointer-events: none;   /* NEVER block clicks */
+    transform: scale(0.8) rotate(-4deg);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 5;             /* BELOW buttons */
   }
 
   #photoOverlay.show {
     opacity: 1;
-    pointer-events: auto;
+    transform: scale(1) rotate(-2deg);
   }
 
   #photoOverlay img {
-    max-width: 85vw;
-    max-height: 85vh;
-    border-radius: 20px;
-    object-fit: contain;
-    box-shadow: 0 25px 60px rgba(255, 80, 120, 0.5);
-    animation: popIn 0.6s ease;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow:
+      0 10px 25px rgba(0,0,0,0.18),
+      0 0 0 6px #fff;
   }
+
+
 
   @keyframes popIn {
     from { transform: scale(0.8); opacity: 0; }
@@ -230,7 +287,13 @@
       opacity: 1;
       transform: translateY(0);
     }
+    }
+    button {
+    position: relative;
+    z-index: 999;
+    pointer-events: auto;
   }
+
   /* 🔒 FORCE BUTTONS TO BE CLICKABLE */
 .yes,
 .no {
@@ -248,10 +311,10 @@
 
 /* 🚫 Absolutely nothing decorative should capture clicks */
 .falling-heart,
-.heart,
-#photoOverlay {
+.heart {
   pointer-events: none;
 }
+
 button {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -269,7 +332,7 @@ button {
 <body>
 
   <div class="card">
-    <h1>Will you be my Valentine? ❤️</h1>
+    <h1 id="mainQuestion"></h1>
     <div class="bunny">🐰</div>
 
     <div class="buttons">
@@ -285,11 +348,15 @@ button {
     <img id="overlayImage" src="" alt="Me">
   </div>
 
-<script>
+  <script>
+  let hasReadRealLetter = false;
   let yesScale = 1;
   let noMoves = 0;
   const maxNoClicks = 6;
-
+  const finalNoImage = "final_no.jpg"; // image shown ONLY on last NO
+  const yesImage = "yes.jpg";          // image shown on YES
+  
+  /* 📸 Photos */
   const myPhotos = [
     "photo1.jpg",
     "photo2.jpg",
@@ -299,18 +366,50 @@ button {
   ];
   let photoIndex = 0;
 
-  /* Falling hearts */
+  /* 🔄 Preload photos */
+  myPhotos.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+
+  /* 🌸 Falling emojis */
+  const fallingEmojis = [
+    "❤️", "💖", "💕", "💗",
+    "💘", "💝", 
+  ];
+
+  /* 💕 Falling animation */
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "falling-heart";
-    h.innerHTML = "❤️";
+
+    h.innerHTML = fallingEmojis[
+      Math.floor(Math.random() * fallingEmojis.length)
+    ];
+
     h.style.left = Math.random() * window.innerWidth + "px";
-    h.style.fontSize = (18 + Math.random() * 20) + "px";
+    h.style.fontSize = (28 + Math.random() * 22) + "px";
+    h.style.transform = `rotate(${Math.random() * 360}deg)`;
+    h.style.animationDuration = (5 + Math.random() * 4) + "s";
+
     document.body.appendChild(h);
-    setTimeout(() => h.remove(), 7000);
+    setTimeout(() => h.remove(), 9000);
   }, window.innerWidth < 600 ? 600 : 350);
 
+/* 🔐 Letter state */
+let letterStage = 0;
+
 function yesClicked() {
+  const overlay = document.getElementById("photoOverlay");
+  const overlayImg = document.getElementById("overlayImage");
+
+  // ✅ Only show image if overlay still exists
+  if (overlay && overlayImg) {
+    overlayImg.src = yesImage;
+    overlay.classList.add("show");
+    setTimeout(() => overlay.classList.remove("show"), 2500);
+  }
+
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
 
@@ -327,159 +426,295 @@ function yesClicked() {
     font-family:'Segoe UI', Arial, sans-serif;
     animation: fadeIn 2s ease;
     padding:40px 20px;
+    overflow-y:scroll;
+    overflow-x:hidden;
+  ">
 
-    overflow-y: scroll;   /* ✅ FORCE SCROLL */
-    overflow-x: hidden;
-">
+    <h1 style="
+      font-size:clamp(32px,7vw,52px);
+      color:#ff2f68;
+      margin-bottom:25px;
+      font-weight:500;
+      animation: rise 1.5s ease;
+    ">
+      This moment means everything 💖
+    </h1>
 
-      <h1 style="
-        font-size:clamp(32px,7vw,52px);
-        color:#ff2f68;
-        margin-bottom:25px;
-        font-weight:500;
-        animation: rise 1.5s ease;
-      ">
-        This moment means everything 💖
-      </h1>
+    <p style="
+      font-size:clamp(16px,4vw,20px);
+      color:#a04454;
+      margin-bottom:18px;
+      animation: fadeIn 2.5s ease;
+    ">
+      A love built on faith, trust, and grace
+    </p>
 
-      <p style="
-        font-size:clamp(16px,4vw,20px);
-        color:#a04454;
-        margin-bottom:18px;
-        animation: fadeIn 2.5s ease;
-      ">
-        A love built on faith, trust, and grace
-      </p>
-
-      <div class="verse-container">
-        <div class="verse-text">
-          “സ്നേഹം എല്ലാം സഹിക്കുന്നു,<br>
-          എല്ലാം വിശ്വസിക്കുന്നു,<br>
-          എല്ലാം പ്രതീക്ഷിക്കുന്നു,<br>
-          എല്ലാം സഹിക്കുന്നു.<br>
-          സ്നേഹം ഒരിക്കലും അവസാനിക്കുന്നില്ല.”
-        </div>
-        <div class="verse-ref">
-          — 1 കൊരിന്ത്യർ 13:7–8
-        </div>
+    <div class="verse-container">
+      <div class="verse-text">
+        “സ്നേഹം എല്ലാം സഹിക്കുന്നു,<br>
+        എല്ലാം വിശ്വസിക്കുന്നു,<br>
+        എല്ലാം പ്രതീക്ഷിക്കുന്നു,<br>
+        എല്ലാം സഹിക്കുന്നു.<br>
+        സ്നേഹം ഒരിക്കലും അവസാനിക്കുന്നില്ല.”
       </div>
-
-      <img src="photo1.jpg" style="
-        width:180px;
-        height:180px;
-        border-radius:50%;
-        object-fit:cover;
-        box-shadow:0 20px 50px rgba(255,80,120,0.5);
-        animation: popIn 1.5s ease;
-        margin:40px 0 30px;
-      ">
-
-      <button onclick="openLetter()" style="
-        margin-top:10px;
-        padding:14px 34px;
-        font-size:16px;
-        border-radius:30px;
-        border:none;
-        cursor:pointer;
-        background:linear-gradient(135deg,#ff9ab5,#ff5f8a);
-        color:white;
-        box-shadow:0 12px 30px rgba(255,80,120,0.4);
-        animation: fadeIn 4s ease;
-      ">
-        💌 Read my letter
-      </button>
-
-      <p style="
-        margin-top:25px;
-        font-size:18px;
-        color:#ff5f8a;
-        animation: fadeIn 5s ease;
-      ">
-        ❤️ This is just the beginning ❤️
-      </p>
-
+      <div class="verse-ref">
+        — 1 കൊരിന്ത്യർ 13:7–8
+      </div>
     </div>
+
+    <img src="photo1.jpg" style="
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      object-fit:cover;
+      box-shadow:0 20px 50px rgba(255,80,120,0.5);
+      animation: popIn 1.5s ease;
+      margin:40px 0 30px;
+    ">
+
+    ${hasReadRealLetter ? "" : `
+    <button id="letterBtn" onclick="openLetter()" style="
+      margin-top:10px;
+      padding:14px 34px;
+      font-size:16px;
+      border-radius:30px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(135deg,#ff9ab5,#ff5f8a);
+      color:white;
+      box-shadow:0 12px 30px rgba(255,80,120,0.4);
+      animation: fadeIn 4s ease;
+    ">
+      💌 Read my letter
+    </button>
+    `}
+    <div id="quietMessage"></div>
+
+
+    <p style="
+      margin-top:25px;
+      font-size:18px;
+      color:#ff5f8a;
+      animation: fadeIn 5s ease;
+    ">
+      ❤️ This is just the beginning ❤️
+    </p>
+
+  </div>
   `;
 }
 
 function openLetter() {
+  if (letterStage === 0) {
+    showDecoyLetter();
+    letterStage = 1;
+  } else {
+    showRealLetter();
+  }
+}
+
+function showDecoyLetter() {
   document.body.innerHTML = `
+  <div style="
+    min-height:100vh;
+    width:100vw;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#fff1f5,#ffe6eb);
+    font-family:'Segoe UI', Arial, sans-serif;
+    padding:40px 20px;
+    animation: fadeIn 1.5s ease;
+  ">
+
     <div style="
-      min-height:100vh;
-      width:100vw;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:linear-gradient(135deg,#fff1f5,#ffe6eb);
-      font-family:'Segoe UI', Arial, sans-serif;
-      padding:40px 20px;
-      overflow-y:auto;
-      animation: fadeIn 1.5s ease;
+      max-width:700px;
+      background:rgba(255,255,255,0.75);
+      backdrop-filter:blur(12px);
+      border-radius:24px;
+      padding:40px 30px;
+      box-shadow:0 30px 60px rgba(255,80,120,0.25);
+      text-align:center;
     ">
 
-      <div style="
-        max-width:700px;
-        background:rgba(255,255,255,0.75);
-        backdrop-filter:blur(12px);
-        border-radius:24px;
-        padding:40px 30px;
-        box-shadow:0 30px 60px rgba(255,80,120,0.25);
+      <h2 style="
+        color:#ff2f68;
+        font-weight:400;
+        margin-bottom:25px;
+        line-height:1.6;
       ">
+        Do you think I can fit everything<br>
+        in this small letter?
+      </h2>
 
-        <h2 style="
-          color:#ff2f68;
-          text-align:center;
-          font-weight:500;
-          margin-bottom:30px;
+      <p style="
+        font-size:20px;
+        color:#7a1f2b;
+        line-height:1.8;
+        font-style:italic;
+      ">
+        Do you really think love has a language?
+      </p>
+
+      <div style="margin-top:40px;">
+        <button onclick="returnToYesScreen()" style="
+          padding:12px 32px;
+          font-size:15px;
+          border-radius:25px;
+          border:none;
+          cursor:pointer;
+          background:#ffd1dc;
+          color:#8b1e1e;
         ">
-          My letter to you 💖
-        </h2>
-
-        <p style="
-          font-size:18px;
-          color:#7a1f2b;
-          line-height:1.9;
-          white-space:pre-line;
-        ">
-Dear my love,
-
-This is where YOU write your message.
-
-Write honestly.
-Write softly.
-Write what your heart says.
-
-Tell her why she matters.
-Tell her what you feel.
-Tell her what you hope for.
-
-No filters.
-No perfection.
-Just you.
-
-Forever yours,
-— (Your Name)
-        </p>
-
-        <!-- 🔙 Back button -->
-        <div style="text-align:center; margin-top:35px;">
-          <button onclick="yesClicked()" style="
-            padding:12px 30px;
-            font-size:15px;
-            border-radius:25px;
-            border:none;
-            cursor:pointer;
-            background:#ffd1dc;
-            color:#8b1e1e;
-          ">
-            ← Back
-          </button>
-        </div>
-
+          ← Close
+        </button>
       </div>
+
     </div>
+  </div>
   `;
 }
+function typeWriter(element, text, speed = 35, callback) {
+  let i = 0;
+  element.innerHTML = '<span></span><span class="typing-cursor"></span>';
+
+  const textSpan = element.querySelector("span");
+  const cursor = element.querySelector(".typing-cursor");
+
+  const timer = setInterval(() => {
+    textSpan.innerHTML += text.charAt(i);
+    i++;
+
+    if (i >= text.length) {
+      clearInterval(timer);
+      cursor.remove();
+      if (callback) callback();
+    }
+  }, speed);
+}
+
+
+
+function showRealLetter() {
+  hasReadRealLetter = true;
+  document.body.innerHTML = `
+  <div style="
+    min-height:100vh;
+    width:100vw;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#fff1f5,#ffe6eb);
+    font-family:'Segoe UI', Arial, sans-serif;
+    padding:40px 20px;
+    overflow-y:auto;
+    animation: fadeIn 1.5s ease;
+  ">
+
+    <div style="
+      max-width:700px;
+      background:rgba(255,255,255,0.75);
+      backdrop-filter:blur(12px);
+      border-radius:24px;
+      padding:40px 30px;
+      box-shadow:0 30px 60px rgba(255,80,120,0.25);
+    ">
+
+    <p id="typedLetter" style="
+      font-size:22px;
+      color:#7a1f2b;
+      line-height:2;
+      white-space:pre-line;
+      min-height:220px;
+      font-family:'Dancing Script', cursive;
+      letter-spacing:0.4px;
+    "></p>
+
+
+
+      <div id="realCloseWrap" style="
+        text-align:center;
+        margin-top:40px;
+        opacity:0;
+        transition:opacity 1s ease;
+      ">
+        <button onclick="closeRealLetter()" style="
+          padding:12px 32px;
+          font-size:15px;
+          border-radius:25px;
+          border:none;
+          cursor:pointer;
+          background:#ffd1dc;
+          color:#8b1e1e;
+        ">
+          ← Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+  `;
+
+  const realText = `Dear my love,
+
+THIS is where your real message goes.
+Say everything.
+No holding back.
+No disguises.
+
+This one is true.
+This one is honest.
+This one is forever.
+
+— Yours`;
+
+  const letterEl = document.getElementById("typedLetter");
+  const closeWrap = document.getElementById("realCloseWrap");
+
+  typeWriter(letterEl, realText, 50, () => {
+    closeWrap.style.opacity = "1";
+  });
+}
+
+function closeRealLetter() {
+  hasReadRealLetter = true;
+
+  yesClicked();
+
+  setTimeout(() => {
+    const btn = document.getElementById("letterBtn");
+    const quiet = document.getElementById("quietMessage");
+
+    if (btn) {
+      btn.classList.add("fade-out");
+
+      setTimeout(() => {
+        btn.remove();
+
+        if (quiet) {
+          quiet.innerHTML = `<div class="quiet-text">I meant every word.</div>`;
+        }
+      }, 600);
+    }
+  }, 300);
+}
+
+
+
+
+function showYesScreen(fromLetter = false) {
+  yesClicked();
+
+  // After YES screen is rebuilt, safely update button text
+  setTimeout(() => {
+    const btn = document.getElementById("letterBtn");
+    if (btn && fromLetter) {
+      btn.innerText = "this time fr believe me click me";
+    }
+  }, 300);
+}
+
+
 
 
   function burstHearts(x, y, count) {
@@ -493,46 +728,78 @@ Forever yours,
       setTimeout(() => h.remove(), 3000);
     }
   }
+const noMessages = [
+  "Are you sure? Please be my valentine :> 🥺",
+  "Wait… Think again,Maybe you are confused... click yes 🥹 💔",
+  "Sheerikum kondu ketta Still NO!!? 😞",
+  "I’m still right here... wait cheyano till u click yes ?🥲💗",
+  "Okay… ithanu last chance inni avasram illa click yes 😣",
+  "ippo nee enna cheyum yes clickedii dhusthii :>😈❤️"
+];
 
-  function noClicked() {
-    const noBtn = document.querySelector(".no");
-    const card = document.querySelector(".card");
-    const yesWrapper = document.querySelector(".yes-wrapper");
+function noClicked() {
+  if (noMoves >= maxNoClicks) return;
 
-    card.classList.add("shake");
-    setTimeout(() => card.classList.remove("shake"), 300);
+  const noBtn = document.querySelector(".no");
+  const card = document.querySelector(".card");
+  const question = document.getElementById("mainQuestion");
 
-    const yesBtn = document.querySelector(".yes");
+  /* 🤭 Shake card */
+  card.classList.add("shake");
+  setTimeout(() => card.classList.remove("shake"), 300);
 
-    yesScale = Math.min(yesScale + 0.25, 2.4);
-    yesBtn.style.transition = "transform 0.45s cubic-bezier(.22,.61,.36,1)";
-    yesBtn.style.transform = `scale(${yesScale})`;
+  /* ✍️ Change text with typewriter */
+  if (question) {
+    const msg = noMessages[Math.min(noMoves, noMessages.length - 1)];
+    typeWriter(question, msg, 45);
+  }
 
+  /* 💓 Grow YES button */
+  const yesBtn = document.querySelector(".yes");
+  yesScale = Math.min(yesScale + 0.25, 2.4);
+  yesBtn.style.transition = "transform 0.45s cubic-bezier(.22,.61,.36,1)";
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-    const r = noBtn.getBoundingClientRect();
-    burstHearts(r.left + r.width / 2, r.top + r.height / 2, 40);
+  /* 🏃 Move NO button */
+  noMoves++;
+  noBtn.style.transition = "transform 0.35s ease-out";
+  noBtn.style.transform = `
+    translate(${Math.sin(noMoves) * 18}px, ${Math.cos(noMoves) * 12}px)
+  `;
 
+  /* 📸 SHOW IMAGE ONLY ON LAST NO */
+  if (noMoves === maxNoClicks) {
     const overlay = document.getElementById("photoOverlay");
     const overlayImg = document.getElementById("overlayImage");
-    overlayImg.src = myPhotos[photoIndex];
-    overlay.classList.add("show");
 
-    photoIndex = (photoIndex + 1) % myPhotos.length;
+    overlayImg.src = finalNoImage;
+    overlay.classList.add("show");
 
     setTimeout(() => overlay.classList.remove("show"), 2500);
 
-    noMoves++;
-    noBtn.style.transition = "transform 0.35s ease-out";
-noBtn.style.transform = `
-  translate(${Math.sin(noMoves) * 18}px, ${Math.cos(noMoves) * 12}px)
-`;
-
-
-    if (noMoves >= maxNoClicks) {
-      noBtn.style.opacity = "0";
-      setTimeout(() => noBtn.remove(), 400);
-    }
+    noBtn.style.opacity = "0";
+    setTimeout(() => noBtn.remove(), 400);
   }
+}
+
+/* ✍️ Initial question typing */
+window.addEventListener("load", () => {
+  const q = document.getElementById("mainQuestion");
+  if (q) {
+    typeWriter(q, "Will you be my Valentine? ❤️", 50);
+  }
+});
+  function returnToYesScreen() {
+    yesClicked();
+
+    setTimeout(() => {
+      const btn = document.getElementById("letterBtn");
+      if (btn) {
+        btn.innerText = "this time fr believe me click me";
+      }
+    }, 300);
+  }
+
 </script>
 
 </body>
