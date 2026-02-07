@@ -244,12 +244,32 @@
     display: flex;
   }
 
-  #finalNoVideo {
-    width: min(92vw, 520px);
-    max-height: 82vh;
+  #finalNoVideoWrap {
+    width: min(92vw, 560px);
+    background: #111;
     border-radius: 16px;
+    padding: 14px;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  #finalNoVideoTitle {
+    color: #ffd6e0;
+    margin: 4px 0 12px;
+    font-size: 16px;
+  }
+
+  #finalNoVideo {
+    width: 100%;
+    max-height: 70vh;
+    border-radius: 12px;
     background: #000;
+  }
+
+  #finalNoVideoHint {
+    margin: 12px 0 4px;
+    color: #f4b6c3;
+    font-size: 13px;
   }
 
 
@@ -812,20 +832,29 @@ function noClicked() {
 function playFinalNoVideoThenContinue(onDone) {
   let overlay = document.getElementById("finalNoVideoOverlay");
   let video = document.getElementById("finalNoVideo");
+  let hint = document.getElementById("finalNoVideoHint");
 
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.id = "finalNoVideoOverlay";
     overlay.innerHTML = `
-      <video id="finalNoVideo" playsinline preload="auto" controls>
-        <source src="${finalNoVideo}" type="video/mp4">
-      </video>
+      <div id="finalNoVideoWrap">
+        <p id="finalNoVideoTitle">One last thing... watch this till the end 💗</p>
+        <video id="finalNoVideo" playsinline preload="auto" controls>
+          <source src="${finalNoVideo}" type="video/mp4">
+        </video>
+        <p id="finalNoVideoHint">The next part unlocks only after the video ends.</p>
+      </div>
     `;
     document.body.appendChild(overlay);
     video = document.getElementById("finalNoVideo");
+    hint = document.getElementById("finalNoVideoHint");
   }
 
+  let didFinish = false;
   const finish = () => {
+    if (didFinish) return;
+    didFinish = true;
     overlay.classList.remove("show");
     video.pause();
     video.currentTime = 0;
@@ -834,15 +863,20 @@ function playFinalNoVideoThenContinue(onDone) {
 
   video.onended = finish;
   video.onerror = () => {
-    console.warn("Could not load final_no.mp4, continuing without video.");
-    finish();
+    if (hint) {
+      hint.textContent = "Video failed to load. Add final_no.mp4 in this folder and try again.";
+      hint.style.color = "#ffd2d2";
+    }
   };
 
   overlay.classList.add("show");
+  video.currentTime = 0;
   const playPromise = video.play();
   if (playPromise && typeof playPromise.catch === "function") {
     playPromise.catch(() => {
-      console.warn("Autoplay blocked for final_no.mp4. Waiting for manual play.");
+      if (hint) {
+        hint.textContent = "Tap play on the video. After it ends, the next step will appear.";
+      }
     });
   }
 }
