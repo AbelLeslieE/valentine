@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="photo1.gif">
+  <link rel="preload" as="image" href="bunny.gif">
+  <link rel="preload" as="image" href="first_no.gif">
+
 <style>
   body {
     margin: 0;
@@ -106,6 +110,63 @@
   position: relative;
   overflow: hidden;
 }
+/* Gift container */
+.gift {
+  position:relative;
+  width:80px;
+  height:80px;
+  cursor:pointer;
+  text-align:center;
+}
+
+/* Box */
+.gift .box {
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg,#ff7aa8,#ff4d88);
+  border-radius:10px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+  animation:giftBounce 1.6s ease-in-out infinite;
+}
+
+/* Ribbon vertical */
+.gift .ribbon {
+  position:absolute;
+  top:0;
+  left:50%;
+  width:14px;
+  height:100%;
+  background:#ffd86b;
+  transform:translateX(-50%);
+  border-radius:4px;
+  transition:transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Label */
+.gift .label {
+  margin-top:8px;
+  font-size:13px;
+  color:#6b4b00;
+}
+
+/* Bounce */
+@keyframes giftBounce {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-6px); }
+}
+
+/* Unwrap animation */
+.gift.open .box {
+  animation:none;
+  transform:scale(1.2);
+  opacity:0;
+  transition:all 0.5s ease;
+}
+
+.gift.open .ribbon {
+  transform:translateX(-50%) scaleY(0);
+  opacity:0;
+}
 
 /* Moving light beam */
 .reveal-container::before {
@@ -133,6 +194,20 @@
   to {
     top: 100%;
   }
+}
+.gift-box {
+  font-size:48px;
+  transition:transform 0.25s ease;
+  animation:giftBounce 1.6s ease-in-out infinite;
+}
+
+.gift-box:hover {
+  transform:scale(1.15);
+}
+
+@keyframes giftBounce {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-6px); }
 }
 
 /* Golden text glow */
@@ -230,7 +305,7 @@
     width: 360px;
     max-width: 90vw;
     background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(14px);
+    background: rgba(0,0,0,0.45);
     box-shadow: 0 25px 50px rgba(255, 105, 135, 0.25);
     z-index: 2;
   }
@@ -669,9 +744,28 @@ button {
 
 /* 🔐 Letter state */
 let letterStage = 0;
+function openGift(type) {
+  closeForYou();
+
+  // Small opening effect
+  document.body.style.transform = "scale(0.98)";
+  setTimeout(() => {
+    document.body.style.transform = "scale(1)";
+  }, 120);
+
+  if (type === "verse") {
+    openVerse();
+  } else if (type === "letter") {
+    openLetter();
+  }
+}
+
+function closeForYou() {
+  const modal = document.getElementById("forYouModal");
+  if (modal) modal.remove();
+}
 
 function yesClicked() {
-
 
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
@@ -712,7 +806,6 @@ function yesClicked() {
       A love built on faith, trust, and grace
     </p>
 
-
     <img src="photo1.gif" style="
       width:180px;
       height:180px;
@@ -722,38 +815,23 @@ function yesClicked() {
       animation: popIn 1.5s ease;
       margin:40px 0 30px;
     ">
-    <button onclick="openVerse()" style="
+
+    <button onclick="openForYou()" style="
       margin-top:10px;
-      padding:14px 34px;
-      font-size:16px;
+      padding:16px 40px;
+      font-size:17px;
       border-radius:30px;
       border:none;
       cursor:pointer;
-      background:linear-gradient(135deg,#ffd6a5,#ffb347);
-      color:#7a1f2b;
-      box-shadow:0 10px 25px rgba(255,180,80,0.4);
+      background:linear-gradient(135deg,#ffd86b,#ffb347);
+      color:#5a3b00;
+      font-weight:600;
+      box-shadow:0 10px 30px rgba(255,215,120,0.5);
     ">
-      ✨ Words from God
+      🎁 GIFTS :>
     </button>
 
-    ${hasReadRealLetter ? "" : `
-    <button id="letterBtn" onclick="openLetter()" style="
-      margin-top:10px;
-      padding:14px 34px;
-      font-size:16px;
-      border-radius:30px;
-      border:none;
-      cursor:pointer;
-      background:linear-gradient(135deg,#ff9ab5,#ff5f8a);
-      color:white;
-      box-shadow:0 12px 30px rgba(255,80,120,0.4);
-      animation: fadeIn 4s ease;
-    ">
-      💌 Read my letter
-    </button>
-    `}
     <div id="quietMessage"></div>
-
 
     <p style="
       margin-top:25px;
@@ -768,6 +846,7 @@ function yesClicked() {
   `;
 }
 
+
 function openLetter() {
   if (letterStage === 0) {
     showDecoyLetter();
@@ -775,6 +854,108 @@ function openLetter() {
   } else {
     showRealLetter();
   }
+}
+function openForYou() {
+  const modal = document.createElement("div");
+
+  modal.id = "forYouModal";
+  modal.innerHTML = `
+  <div style="
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100dvh;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(6px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    animation:fadeIn 0.5s ease;
+  ">
+
+    <div style="
+      background:linear-gradient(135deg,#fff8e6,#ffe6c7);
+      border-radius:26px;
+      padding:40px 30px;
+      text-align:center;
+      width:90%;
+      max-width:360px;
+      box-shadow:0 25px 60px rgba(0,0,0,0.25);
+      animation:rise 0.6s ease;
+    ">
+
+      <h2 style="
+        margin-bottom:25px;
+        color:#5a3b00;
+        font-weight:500;
+      ">
+        Your Gifts 🎁
+      </h2>
+
+      <div style="
+        display:flex;
+        justify-content:space-around;
+        gap:20px;
+      ">
+
+        <div class="gift" onclick="unwrapGift(this,'verse')">
+          <div class="box"></div>
+          <div class="ribbon"></div>
+          <div class="label">From God</div>
+        </div>
+
+        <div class="gift" onclick="unwrapGift(this,'letter')">
+          <div class="box"></div>
+          <div class="ribbon"></div>
+          <div class="label">From Me</div>
+        </div>
+
+      </div>
+
+      <button onclick="closeForYou()" style="
+        margin-top:30px;
+        padding:10px 26px;
+        border:none;
+        border-radius:20px;
+        background:#eee;
+        cursor:pointer;
+      ">
+        Close
+      </button>
+
+    </div>
+  </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+function unwrapGift(element, type) {
+  element.classList.add("open");
+
+  // small unwrap delay
+  setTimeout(() => {
+    closeForYou();
+
+    if (type === "verse") {
+      openVerse();
+    } else {
+      openLetter();
+    }
+  }, 500);
+}
+
+function closeForYou() {
+  const modal = document.getElementById("forYouModal");
+  if (modal) modal.remove();
+}
+
+
+
+function closeForYou() {
+  const modal = document.getElementById("forYouModal");
+  if (modal) modal.remove();
 }
 
 function showDecoyLetter() {
@@ -964,7 +1145,7 @@ function closeRealLetter() {
         if (quiet) {
           quiet.innerHTML = `<div class="quiet-text">I meant every word.</div>`;
         }
-      }, 600);
+      }, 1200);
     }
   }, 300);
 }
@@ -1219,9 +1400,19 @@ function openVerse() {
 }
 function startDivineDust() {
   const container = document.getElementById("verseCard");
+  if (!container) return;
 
+  let count = 0;
 
   const interval = setInterval(() => {
+    // Stop after 20 particles (performance control)
+    if (count >= 20) {
+      clearInterval(interval);
+      return;
+    }
+
+    count++;
+
     const dust = document.createElement("div");
     dust.className = "divine-dust";
     dust.style.left = Math.random() * 100 + "%";
@@ -1230,13 +1421,16 @@ function startDivineDust() {
 
     container.appendChild(dust);
 
-    setTimeout(() => dust.remove(), 8000);
-  }, 600);
+    setTimeout(() => {
+      dust.remove();
+    }, 8000);
 
+  }, 1000); // slower interval = smoother performance
 
-  // Stop dust when leaving verse screen
+  // Save so it can be cleared later
   window.divineDustInterval = interval;
 }
+
 
 
 function typeVerse() {
