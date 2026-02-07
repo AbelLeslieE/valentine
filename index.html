@@ -72,36 +72,36 @@
     transform: translateY(0);
   }
 }
+/* 🎥 Fullscreen Video Overlay */
+#videoOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh; /* better for mobile */
 
-  /* 🎥 Fullscreen Video Overlay */
-  #videoOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
 
-    opacity: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transition: opacity 0.4s ease;
-  }
+#videoOverlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+#videoOverlay video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-  #videoOverlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
 
-  #videoOverlay video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 
 
   .card {
@@ -324,6 +324,8 @@
     pointer-events: auto;
   }
 
+
+
   /* 🔒 FORCE BUTTONS TO BE CLICKABLE */
 .yes,
 .no {
@@ -376,6 +378,12 @@ button {
   <!-- Full image overlay -->
   <div id="photoOverlay">
     <img id="overlayImage" src="" alt="Me">
+  </div>
+  <!-- 🎥 Video Overlay -->
+  <div id="videoOverlay">
+    <video id="noVideo" playsinline muted preload="auto">
+      <source src="last_no_video.mp4" type="video/mp4">
+    </video>
   </div>
 
   <script>
@@ -771,54 +779,80 @@ function noClicked() {
   if (noMoves >= maxNoClicks) return;
 
   const noBtn = document.querySelector(".no");
+  const yesBtn = document.querySelector(".yes");
   const card = document.querySelector(".card");
   const question = document.getElementById("mainQuestion");
 
   /* 🤭 Shake card */
-  card.classList.add("shake");
-  setTimeout(() => card.classList.remove("shake"), 300);
+  if (card) {
+    card.classList.add("shake");
+    setTimeout(() => card.classList.remove("shake"), 300);
+  }
 
-  /* ✍️ Change text with typewriter */
+  /* ✍️ Change text */
   if (question) {
     const msg = noMessages[Math.min(noMoves, noMessages.length - 1)];
     typeWriter(question, msg, 45);
   }
 
   /* 💓 Grow YES button */
-  const yesBtn = document.querySelector(".yes");
-  yesScale = Math.min(yesScale + 0.25, 2.4);
-  yesBtn.style.transition = "transform 0.45s cubic-bezier(.22,.61,.36,1)";
-  yesBtn.style.transform = `scale(${yesScale})`;
+  if (yesBtn) {
+    yesScale = Math.min(yesScale + 0.25, 2.4);
+    yesBtn.style.transition = "transform 0.45s cubic-bezier(.22,.61,.36,1)";
+    yesBtn.style.transform = `scale(${yesScale})`;
+  }
 
   /* 🏃 Move NO button */
   noMoves++;
-  noBtn.style.transition = "transform 0.35s ease-out";
-  noBtn.style.transform = `
-    translate(${Math.sin(noMoves) * 18}px, ${Math.cos(noMoves) * 12}px)
-  `;
+  if (noBtn) {
+    noBtn.style.transition = "transform 0.35s ease-out";
+    noBtn.style.transform = `
+      translate(${Math.sin(noMoves) * 18}px, ${Math.cos(noMoves) * 12}px)
+    `;
+  }
 
-  /* 📸 SHOW IMAGE ONLY ON LAST NO */
+  /* 🎥 Last NO → play video */
   if (noMoves === maxNoClicks) {
-    const overlay = document.getElementById("photoOverlay");
-    const overlayImg = document.getElementById("overlayImage");
 
-    overlayImg.src = finalNoImage;
-    overlay.classList.add("show");
+    if (noBtn) {
+      noBtn.style.opacity = "0";
+      setTimeout(() => noBtn.remove(), 400);
+    }
 
-    setTimeout(() => overlay.classList.remove("show"), 2500);
+    const videoOverlay = document.getElementById("videoOverlay");
+    const video = document.getElementById("noVideo");
 
-    noBtn.style.opacity = "0";
-    setTimeout(() => noBtn.remove(), 400);
+    if (videoOverlay && video) {
+      videoOverlay.classList.add("show");
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+
+
+      video.currentTime = 0;
+      video.play().catch(() => {});
+
+      video.onended = () => {
+        videoOverlay.classList.remove("show");
+        document.documentElement.style.overflow = "";
+        document.body.style.overflow = "";
+
+
+        const overlay = document.getElementById("photoOverlay");
+        const overlayImg = document.getElementById("overlayImage");
+
+        if (overlay && overlayImg) {
+          overlayImg.src = finalNoImage;
+          overlay.classList.add("show");
+          setTimeout(() => overlay.classList.remove("show"), 2500);
+        }
+      };
+    }
   }
 }
 
-/* ✍️ Initial question typing */
-window.addEventListener("load", () => {
-  const q = document.getElementById("mainQuestion");
-  if (q) {
-    typeWriter(q, "Will you be my Valentine? ❤️", 50);
-  }
-});
+
+
+
   function returnToYesScreen() {
     yesClicked();
 
@@ -829,7 +863,13 @@ window.addEventListener("load", () => {
       }
     }, 300);
   }
-
+/* ✍️ Initial question typing */
+window.addEventListener("load", () => {
+  const q = document.getElementById("mainQuestion");
+  if (q) {
+    typeWriter(q, "Will you be my Valentine? ❤️", 50);
+  }
+});
 </script>
 
 </body>
