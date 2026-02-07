@@ -304,11 +304,14 @@
     border-radius: 28px;
     width: 360px;
     max-width: 90vw;
-    background: rgba(255, 255, 255, 0.6);
-    background: rgba(0,0,0,0.45);
+
+    background: rgba(255, 255, 255, 0.65);  /* soft glass */
+    backdrop-filter: blur(12px);             /* premium glass effect */
+
     box-shadow: 0 25px 50px rgba(255, 105, 135, 0.25);
     z-index: 2;
   }
+
 
   h1 {
     color: #8b1e1e;
@@ -903,13 +906,13 @@ function openForYou() {
         <div class="gift" onclick="unwrapGift(this,'verse')">
           <div class="box"></div>
           <div class="ribbon"></div>
-          <div class="label">From God</div>
+          <div class="label">Bible Verse</div>
         </div>
 
         <div class="gift" onclick="unwrapGift(this,'letter')">
           <div class="box"></div>
           <div class="ribbon"></div>
-          <div class="label">From Me</div>
+          <div class="label">A Letter From Me:></div>
         </div>
 
       </div>
