@@ -5,7 +5,7 @@
   <title>VAL??</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
 <style>
   body {
     margin: 0;
@@ -90,6 +90,68 @@
   z-index: 9999;
   transition: opacity 0.4s ease;
 }
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 30px rgba(255,200,80,0.4); }
+  50% { box-shadow: 0 0 70px rgba(255,200,80,0.9); }
+  100% { box-shadow: 0 0 30px rgba(255,200,80,0.4); }
+}
+/* Divine light rays background */
+@keyframes divineRays {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.6; }
+  50% { transform: rotate(3deg) scale(1.05); opacity: 0.9; }
+  100% { transform: rotate(0deg) scale(1); opacity: 0.6; }
+}
+/* Light reveal mask */
+.reveal-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Moving light beam */
+.reveal-container::before {
+  content: "";
+  position: absolute;
+  top: -120%;
+  left: 0;
+  width: 100%;
+  height: 140%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.9) 0%,
+    rgba(255,255,255,0.6) 20%,
+    rgba(255,255,255,0.2) 40%,
+    transparent 70%
+  );
+  animation: lightReveal 2.5s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes lightReveal {
+  from {
+    top: -120%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+/* Golden text glow */
+.divine-text {
+  position: relative;
+  color: #b88900;
+  text-shadow:
+    0 0 4px rgba(255,220,120,0.6),
+    0 0 10px rgba(255,220,120,0.5),
+    0 0 18px rgba(255,220,120,0.3);
+}
+
+
+/* Soft floating effect */
+@keyframes divineFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
 
 #videoOverlay.show {
   opacity: 1;
@@ -100,6 +162,61 @@
   height: 100%;
   object-fit: contain;
 }
+/* Floating golden dust */
+@keyframes dustFloat {
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  20% { opacity: 0.8; }
+  100% {
+    transform: translateY(-120px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.divine-dust {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ffd86b, rgba(255,216,107,0));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: dustFloat linear forwards;
+}
+/* Golden shimmer sweep */
+.divine-text {
+  position: relative;
+  color: #ffd86b;
+  text-shadow:
+    0 0 6px rgba(255,215,120,0.8),
+    0 0 14px rgba(255,215,120,0.7),
+    0 0 30px rgba(255,215,120,0.6),
+    0 0 60px rgba(255,215,120,0.4);
+}
+
+.divine-text::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.6),
+    transparent
+  );
+  animation: shimmerSweep 5s ease-in-out infinite;
+}
+
+@keyframes shimmerSweep {
+  0% { left: -150%; }
+  60% { left: 120%; }
+  100% { left: 120%; }
+}
+
 
 
 
@@ -162,6 +279,21 @@
   transform: translateX(40px) scale(0.8);
   transition: all 0.4s ease;
   pointer-events: none;
+}
+@keyframes heartbeatGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(255,95,138,0.4);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(255,95,138,0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255,95,138,0.4);
+  }
+}
+
+.envelope-glow {
+  animation: heartbeatGlow 1.4s ease-in-out infinite;
 }
 
 /* When first NO is clicked */
@@ -557,7 +689,7 @@ function yesClicked() {
     font-family:'Segoe UI', Arial, sans-serif;
     animation: fadeIn 2s ease;
     padding:40px 20px;
-    overflow-y:scroll;
+    overflow-y:auto;
     overflow-x:hidden;
   ">
 
@@ -580,18 +712,6 @@ function yesClicked() {
       A love built on faith, trust, and grace
     </p>
 
-    <div class="verse-container">
-      <div class="verse-text">
-        “സ്നേഹം എല്ലാം സഹിക്കുന്നു,<br>
-        എല്ലാം വിശ്വസിക്കുന്നു,<br>
-        എല്ലാം പ്രതീക്ഷിക്കുന്നു,<br>
-        എല്ലാം സഹിക്കുന്നു.<br>
-        സ്നേഹം ഒരിക്കലും അവസാനിക്കുന്നില്ല.”
-      </div>
-      <div class="verse-ref">
-        — 1 കൊരിന്ത്യർ 13:7–8
-      </div>
-    </div>
 
     <img src="photo1.gif" style="
       width:180px;
@@ -602,6 +722,19 @@ function yesClicked() {
       animation: popIn 1.5s ease;
       margin:40px 0 30px;
     ">
+    <button onclick="openVerse()" style="
+      margin-top:10px;
+      padding:14px 34px;
+      font-size:16px;
+      border-radius:30px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(135deg,#ffd6a5,#ffb347);
+      color:#7a1f2b;
+      box-shadow:0 10px 25px rgba(255,180,80,0.4);
+    ">
+      ✨ Words from God
+    </button>
 
     ${hasReadRealLetter ? "" : `
     <button id="letterBtn" onclick="openLetter()" style="
@@ -654,57 +787,143 @@ function showDecoyLetter() {
     align-items:center;
     background:linear-gradient(135deg,#fff1f5,#ffe6eb);
     font-family:'Segoe UI', Arial, sans-serif;
-    padding:40px 20px;
-    animation: fadeIn 1.5s ease;
   ">
 
-    <div style="
-      max-width:700px;
-      background:rgba(255,255,255,0.75);
-      backdrop-filter:blur(12px);
-      border-radius:24px;
-      padding:40px 30px;
-      box-shadow:0 30px 60px rgba(255,80,120,0.25);
-      text-align:center;
+    <div id="envelope" onclick="openEnvelope()" style="
+      position:relative;
+      width:320px;
+      height:220px;
+      background:#ffd1dc;
+      border-radius:10px;
+      cursor:pointer;
+      box-shadow:0 20px 50px rgba(0,0,0,0.2);
+      overflow:hidden;
+      transition: box-shadow 0.6s ease;
     ">
 
-      <h2 style="
-        color:#ff2f68;
-        font-weight:400;
-        margin-bottom:25px;
-        line-height:1.6;
-      ">
-        Do you think I can fit everything<br>
-        in this small letter?
-      </h2>
+      <!-- Flap -->
+      <div id="flap" style="
+        position:absolute;
+        width:100%;
+        height:100%;
+        background:#ff9ab5;
+        clip-path: polygon(0 0, 50% 60%, 100% 0);
+        transform-origin: top;
+        transition: transform 0.8s ease;
+        z-index:2;
+      "></div>
 
-      <p style="
-        font-size:20px;
-        color:#7a1f2b;
+      <!-- Letter -->
+      <div id="letterContent" style="
+        position:absolute;
+        top:15px;
+        left:15px;
+        right:15px;
+        bottom:15px;
+        background:white;
+        border-radius:6px;
+        padding:18px;
+        font-family:'Caveat', cursive;
+        font-size:clamp(20px,5vw,24px);
+        letter-spacing:0.5px;
         line-height:1.8;
-        font-style:italic;
+        transform: translateY(120%);
+        transition: transform 0.8s ease;
+        box-shadow:0 10px 30px rgba(0,0,0,0.15);
+        overflow-y:auto;
       ">
-        Do you really think love has a language?
-      </p>
+        <div id="typedLetter"></div>
 
-      <div style="margin-top:40px;">
-        <button onclick="returnToYesScreen()" style="
-          padding:12px 32px;
-          font-size:15px;
-          border-radius:25px;
-          border:none;
-          cursor:pointer;
-          background:#ffd1dc;
-          color:#8b1e1e;
+        <div id="closeWrap" style="
+          text-align:center;
+          margin-top:20px;
+          opacity:0;
+          transition:opacity 1s ease;
         ">
-          ← Close
-        </button>
+          <button onclick="closeEnvelope()" style="
+            padding:10px 28px;
+            border:none;
+            border-radius:20px;
+            background:#ffd1dc;
+            color:#8b1e1e;
+            cursor:pointer;
+          ">
+            Close
+          </button>
+        </div>
       </div>
 
     </div>
+
+    <p style="position:absolute; bottom:40px; color:#b85b6b;">
+      Tap the envelope
+    </p>
+
   </div>
   `;
 }
+function openEnvelope() {
+  const flap = document.getElementById("flap");
+  const letter = document.getElementById("letterContent");
+  const envelope = document.getElementById("envelope");
+
+  // Open flap
+  flap.style.transform = "rotateX(180deg)";
+
+  // Start heartbeat glow
+  envelope.classList.add("envelope-glow");
+
+  // Slide letter out
+  setTimeout(() => {
+    letter.style.transform = "translateY(0)";
+    startTypingLetter();
+  }, 300);
+}
+
+function startTypingLetter() {
+  const text = `Dear my love,
+
+I don’t know if words will ever be enough.
+
+But this is me,
+being honest,
+being real,
+being yours.
+
+Every moment with you feels special.
+And I want many more of them.
+
+This isn’t just a question.
+It’s a promise.
+
+— Yours always ❤️`;
+
+  const element = document.getElementById("typedLetter");
+  const closeWrap = document.getElementById("closeWrap");
+  const envelope = document.getElementById("envelope");
+
+  let i = 0;
+
+  function type() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, 35);
+    } else {
+      closeWrap.style.opacity = "1";
+
+      // Stop heartbeat glow after typing
+      envelope.classList.remove("envelope-glow");
+    }
+  }
+
+  type();
+}
+function closeEnvelope() {
+  yesClicked();
+}
+
+
 function typeWriter(element, text, speed = 35, callback) {
   let i = 0;
   element.innerHTML = '<span></span><span class="typing-cursor"></span>';
@@ -726,86 +945,6 @@ function typeWriter(element, text, speed = 35, callback) {
 
 
 
-function showRealLetter() {
-  hasReadRealLetter = true;
-  document.body.innerHTML = `
-  <div style="
-    min-height:100vh;
-    width:100vw;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#fff1f5,#ffe6eb);
-    font-family:'Segoe UI', Arial, sans-serif;
-    padding:40px 20px;
-    overflow-y:auto;
-    animation: fadeIn 1.5s ease;
-  ">
-
-    <div style="
-      max-width:700px;
-      background:rgba(255,255,255,0.75);
-      backdrop-filter:blur(12px);
-      border-radius:24px;
-      padding:40px 30px;
-      box-shadow:0 30px 60px rgba(255,80,120,0.25);
-    ">
-
-    <p id="typedLetter" style="
-      font-size:22px;
-      color:#7a1f2b;
-      line-height:2;
-      white-space:pre-line;
-      min-height:220px;
-      font-family:'Dancing Script', cursive;
-      letter-spacing:0.4px;
-    "></p>
-
-
-
-      <div id="realCloseWrap" style="
-        text-align:center;
-        margin-top:40px;
-        opacity:0;
-        transition:opacity 1s ease;
-      ">
-        <button onclick="closeRealLetter()" style="
-          padding:12px 32px;
-          font-size:15px;
-          border-radius:25px;
-          border:none;
-          cursor:pointer;
-          background:#ffd1dc;
-          color:#8b1e1e;
-        ">
-          ← Close
-        </button>
-      </div>
-
-    </div>
-  </div>
-  `;
-
-  const realText = `Dear my love,
-
-THIS is where your real message goes.
-Say everything.
-No holding back.
-No disguises.
-
-This one is true.
-This one is honest.
-This one is forever.
-
-— Yours`;
-
-  const letterEl = document.getElementById("typedLetter");
-  const closeWrap = document.getElementById("realCloseWrap");
-
-  typeWriter(letterEl, realText, 50, () => {
-    closeWrap.style.opacity = "1";
-  });
-}
 
 function closeRealLetter() {
   hasReadRealLetter = true;
@@ -985,6 +1124,156 @@ function noClicked() {
       }
     }, 300);
   }
+function openVerse() {
+  document.body.innerHTML = `
+  <div style="
+    min-height:100dvh;
+    width:100vw;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding-top:12vh;
+    background: radial-gradient(circle at center,
+      #fffaf0 0%,
+      #ffecc7 35%,
+      #ffdca8 60%,
+      #f5c98a 100%);
+    position:relative;
+    overflow:hidden;
+    font-family:'Segoe UI', Arial, sans-serif;
+    animation: fadeIn 2.5s ease;
+  ">
+
+    <!-- Divine Light Rays -->
+      <div style="
+        position:fixed;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        width:1000px;
+        height:1000px;
+        pointer-events:none;
+      background:radial-gradient(circle,
+        rgba(255,215,120,0.18) 0%,
+        rgba(255,215,120,0.08) 35%,
+        transparent 70%);
+      border-radius:50%;
+    ">
+    </div>
+
+
+    <div id="verseCard" style="
+      position:relative;
+      max-width:650px;
+      padding:50px 30px;
+      text-align:center;
+      min-height:420px;
+      overflow:hidden;
+    ">
+
+
+    <div id="typedVerse" class="divine-text" style="
+      font-family:'Caveat', cursive;
+      font-size:clamp(24px,5vw,34px);
+      line-height:1.9;
+      white-space:pre-line;
+      min-height:260px;
+
+      color:#5a3b00;
+
+      text-shadow:
+        0 0 6px rgba(255,220,120,0.6),
+        0 0 14px rgba(255,210,90,0.4);
+
+      opacity:0;
+      animation: fadeIn 1.8s ease forwards;
+    "></div>
+
+
+
+      <div id="closeVerseWrap" style="
+        margin-top:40px;
+        opacity:0;
+        transition:opacity 1s ease;
+      ">
+        <button onclick="closeVerse()" style="
+          padding:12px 34px;
+          border:none;
+          border-radius:30px;
+          background:linear-gradient(135deg,#ffd86b,#ffb347);
+          color:black;
+          font-weight:600;
+          cursor:pointer;
+          box-shadow:0 0 25px rgba(255,215,120,0.6);
+        ">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+  `;
+
+  setTimeout(typeVerse, 800);
+  startDivineDust();
+}
+function startDivineDust() {
+  const container = document.getElementById("verseCard");
+
+
+  const interval = setInterval(() => {
+    const dust = document.createElement("div");
+    dust.className = "divine-dust";
+    dust.style.left = Math.random() * 100 + "%";
+    dust.style.bottom = "0px";
+    dust.style.animationDuration = (4 + Math.random() * 4) + "s";
+
+    container.appendChild(dust);
+
+    setTimeout(() => dust.remove(), 8000);
+  }, 600);
+
+
+  // Stop dust when leaving verse screen
+  window.divineDustInterval = interval;
+}
+
+
+function typeVerse() {
+  const text = `“സ്നേഹം എല്ലാം സഹിക്കുന്നു,
+എല്ലാം വിശ്വസിക്കുന്നു,
+എല്ലാം പ്രതീക്ഷിക്കുന്നു,
+എല്ലാം സഹിക്കുന്നു.
+സ്നേഹം ഒരിക്കലും അവസാനിക്കുന്നില്ല.”
+
+— 1 കൊരിന്ത്യർ 13:7–8`;
+
+  const el = document.getElementById("typedVerse");
+  const closeWrap = document.getElementById("closeVerseWrap");
+
+  let i = 0;
+
+  function type() {
+    if (i < text.length) {
+      el.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, 35);
+    } else {
+      closeWrap.style.opacity = "1";
+    }
+  }
+
+  type();
+}
+
+function closeVerse() {
+  if (window.divineDustInterval) {
+    clearInterval(window.divineDustInterval);
+  }
+  yesClicked();
+}
+
+
 /* ✍️ Initial question typing */
 window.addEventListener("load", () => {
   const q = document.getElementById("mainQuestion");
