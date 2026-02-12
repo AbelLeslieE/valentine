@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="photo1.gif">
-  <link rel="preload" as="image" href="bunny.gif">
-  <link rel="preload" as="image" href="first_no.gif">
+  <link rel="preload" href="bunny.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="last_no_video.mp4" as="video" type="video/mp4">
+
 
 <style>
   body {
@@ -160,6 +160,165 @@
 @keyframes giftBounce {
   0%,100% { transform:translateY(0); }
   50% { transform:translateY(-6px); }
+}
+
+/* MUSIC ROOM */
+#musicRoom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: radial-gradient(circle,#1a1a1a,#000);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease;
+}
+
+.music-container {
+  text-align: center;
+  color: white;
+}
+
+/* Disc style */
+.song-disc {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle,#444 30%,#111 60%,#000 100%);
+  margin: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  transition: transform 0.3s ease;
+}
+
+.song-disc:hover {
+  transform: scale(1.08);
+}
+
+/* Center label */
+.song-disc::after {
+  content: "";
+  width: 35px;
+  height: 35px;
+  background: #ffd86b;
+  border-radius: 50%;
+  position: absolute;
+}
+
+/* Song name */
+.song-title {
+  position: absolute;
+  bottom: -28px;
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+}
+
+
+
+/* Glow when active */
+.active-disc {
+  box-shadow: 0 0 35px rgba(255,216,107,0.9);
+}
+
+@keyframes spinDisc {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+
+/* Music Player Overlay */
+#musicOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease;
+}
+
+/* Player Card */
+.music-player {
+  background: linear-gradient(135deg,#fff8e6,#ffe6c7);
+  padding: 40px 30px;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+}
+
+/* Disc */
+.disc {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #333 30%, #111 60%, #000 100%);
+  margin: 0 auto 25px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+
+/* Center label */
+.disc::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #ffd86b;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Spinning animation */
+.spin {
+  animation: spinDisc 2s linear infinite;
+}
+
+@keyframes spinDisc {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* Music Room Buttons Fix */
+#musicRoom button {
+  background: linear-gradient(135deg, #ffd86b, #ffb347);
+  color: #5a3b00;
+  font-weight: 600;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#musicRoom button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.4);
+}
+
+/* Controls */
+.music-controls button {
+  margin: 8px;
+  padding: 10px 22px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #ffd86b;
+  font-weight: 600;
 }
 
 /* Unwrap animation */
@@ -335,13 +494,14 @@
     margin-bottom: 35px;
   }
 
-  .bunny img {
+  .bunny video {
     width: 120px;
     height: auto;
     display: block;
     margin: 0 auto;
     animation: bunnyJump 1.6s ease-in-out infinite;
-  }
+    }
+
   @keyframes bunnyJump {
     0%, 100% {
       transform: translateY(0) scale(1);
@@ -697,8 +857,11 @@ button {
     <h1 id="mainQuestion"></h1>
     <div id="reactionContainer"></div>
     <div class="bunny" id="mainBunny">
-    <img id="bunnyImg" src="bunny.gif" alt="bunny">
-  </div>
+    <video id="bunnyImg" autoplay loop muted playsinline preload="metadata">
+        <source src="bunny.mp4" type="video/mp4">
+    </video>
+    </div>
+
 
   
 
@@ -723,18 +886,28 @@ button {
   let yesScale = 1;
   let noMoves = 0;
   const maxNoClicks = 6;
-  
+  const musicList = [
+    { name: "Aradhike", file: "Aradhike.mp3" },
+    { name: "Uyire", file: "Uyire.mp3" },
+    { name: "Vathilil_Vaa", file: "Vathilil_vaa.mp3" }
+  ];
+ 
+  let currentAudio = null;
+  let currentDisc = null;
+
   /* 📸 Photos */
   const myPhotos = [
-    "photo1.gif",
+    "photo1.mp4",
   ];
   let photoIndex = 0;
 
   /* 🔄 Preload photos */
   myPhotos.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
+    const v = document.createElement("video");
+    v.src = src;
+    v.preload = "metadata";   // lighter loading
+    });
+
 
   /* 🌸 Falling emojis */
   const fallingEmojis = [
@@ -742,8 +915,10 @@ button {
     "💘", "💝", 
   ];
 
-  /* 💕 Falling animation */
-  const heartInterval = setInterval(() => {
+let heartInterval;
+
+window.addEventListener("load", () => {
+  heartInterval = setInterval(() => {
     const h = document.createElement("div");
     h.className = "falling-heart";
 
@@ -759,6 +934,90 @@ button {
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 9000);
   }, window.innerWidth < 600 ? 600 : 350);
+});
+
+function playDisc(index, element) {
+  // Stop previous
+  if (currentAudio) {
+    currentAudio.pause();
+  }
+
+  if (currentDisc) {
+    currentDisc.classList.remove("spin", "active-disc");
+  }
+
+  // New audio
+  currentAudio = new Audio(musicList[index].file);
+  currentAudio.volume = 0.9;
+  currentAudio.play().catch(() => {});
+
+
+  // Animate disc
+  element.classList.add("spin", "active-disc");
+  currentDisc = element;
+
+  // Auto stop animation when finished
+  currentAudio.onended = () => {
+    element.classList.remove("spin", "active-disc");
+  };
+}
+function pauseMusic() {
+  if (currentAudio) {
+    currentAudio.pause();
+  }
+  if (currentDisc) {
+    currentDisc.classList.remove("spin", "active-disc");
+  }
+}
+function closeMusicRoom() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+
+  if (currentDisc) {
+    currentDisc.classList.remove("spin", "active-disc");
+    currentDisc = null;
+  }
+
+  const room = document.getElementById("musicRoom");
+  if (room) room.remove();
+}
+
+function openMusicRoom() {
+  const room = document.createElement("div");
+  room.id = "musicRoom";
+
+  let discsHTML = "";
+
+  musicList.forEach((song, index) => {
+    discsHTML += `
+      <div class="song-disc" onclick="playDisc(${index}, this)">
+        <div class="song-title">${song.name}</div>
+      </div>
+    `;
+  });
+
+  room.innerHTML = `
+    <div class="music-container">
+      <h2 style="margin-bottom:20px;">Oru Song ayalo 🎶</h2>
+      ${discsHTML}
+      <div style="margin-top:30px;">
+        <button onclick="pauseMusic()">Pause</button>
+        <button onclick="closeMusicRoom()">Close</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(room);
+}
+
+
+
+
+
+
+
 
 function openGift(type) {
   closeForYou();
@@ -823,15 +1082,17 @@ function yesClicked() {
       A love built on faith, trust, and grace
     </p>
 
-    <img src="photo1.gif" style="
-      width:180px;
-      height:180px;
-      border-radius:50%;
-      object-fit:cover;
-      box-shadow:0 20px 50px rgba(255,80,120,0.5);
-      animation: popIn 1.5s ease;
-      margin:40px 0 30px;
-    ">
+    <video autoplay loop muted playsinline style="
+        width:180px;
+        height:180px;
+        border-radius:50%;
+        object-fit:cover;
+        box-shadow:0 20px 50px rgba(255,80,120,0.5);
+        margin:40px 0 30px;
+        ">
+        <source src="photo1.mp4" type="video/mp4">
+        </video>
+
 
     <button onclick="openForYou()" style="
       margin-top:10px;
@@ -849,6 +1110,7 @@ function yesClicked() {
     ">
       🎁 GIFTS :>
     </button>
+
 
     <div id="quietMessage"></div>
 
@@ -913,21 +1175,35 @@ function openForYou() {
         display:flex;
         justify-content:space-around;
         gap:20px;
-      ">
+        flex-wrap:wrap;
+        ">
 
         <div class="gift" onclick="unwrapGift(this,'verse')">
-          <div class="box"></div>
-          <div class="ribbon"></div>
-          <div class="label">Bible Verse</div>
+            <div class="box"></div>
+            <div class="ribbon"></div>
+            <div class="label">Bible Verse</div>
         </div>
 
         <div class="gift" onclick="unwrapGift(this,'letter')">
-          <div class="box"></div>
-          <div class="ribbon"></div>
-          <div class="label">A Letter From Me:></div>
+            <div class="box"></div>
+            <div class="ribbon"></div>
+            <div class="label">Letter</div>
         </div>
 
-      </div>
+        <!-- NEW MUSIC GIFT -->
+        <div class="gift" onclick="unwrapGift(this,'music')">
+            <div class="box"></div>
+            <div class="ribbon"></div>
+            <div class="label">Oru Song ayalo 🎵</div>
+        </div>
+
+        </div>
+
+
+
+
+
+
 
       <button onclick="closeForYou()" style="
         margin-top:30px;
@@ -949,17 +1225,19 @@ function openForYou() {
 function unwrapGift(element, type) {
   element.classList.add("open");
 
-  // small unwrap delay
   setTimeout(() => {
     closeForYou();
 
     if (type === "verse") {
       openVerse();
-    } else {
+    } else if (type === "letter") {
       openLetter();
+    } else if (type === "music") {
+      openMusicRoom();
     }
   }, 500);
 }
+
 function showDecoyLetter() {
   document.body.innerHTML = `
   <div style="
@@ -1172,12 +1450,12 @@ function noClicked() {
   const bunny = document.getElementById("mainBunny");
 
   const reactionGifs = [
-    "first_no.gif",
-    "no2.gif",
-    "no3.gif",
-    "no4.gif",
-    "no5.gif",
-    "final_no.gif",
+    "first_no.mp4",
+    "no2.mp4",
+    "no3.mp4",
+    "no4.mp4",
+    "no5.mp4",
+    "final_no.mp4",
   ];
 
   // Remove bunny after first NO
@@ -1196,10 +1474,12 @@ function noClicked() {
     }
 
     container.innerHTML = `
-      <img src="${reactionGifs[gifIndex]}?${Date.now()}" 
-          style="width:130px; display:block; margin:0 auto;">
+    <video autoplay loop muted playsinline style="width:130px; display:block; margin:0 auto;">
+        <source src="${reactionGifs[gifIndex]}" type="video/mp4">
+    </video>
     `;
-  }
+    }
+
 
   if (noBtn) {
     noBtn.style.transition = "transform 0.35s ease-out";
