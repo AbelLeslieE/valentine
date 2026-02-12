@@ -119,12 +119,125 @@
 }
 /* Gift container */
 .gift {
-  position:relative;
-  width:80px;
-  height:80px;
-  cursor:pointer;
-  text-align:center;
+  position: relative;
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+  text-align: center;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+.gift .label {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b4b00;
+  line-height: 1.3;
+  text-align: center;
+}
+.gift {
+  transition: transform 0.25s ease;
+}
+
+.gift:hover {
+  transform: translateY(-6px);
+}
+
+/* STYLE FOR ROSE GIFT */
+/* Rose Scenario */
+#roseScene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: linear-gradient(135deg,#fff0f4,#ffe3ea);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  z-index: 9999;
+  animation: fadeIn 0.5s ease;
+}
+.big-bouquet {
+  width: 420px;
+  max-width: 95vw;
+  opacity: 0;
+  transform: scale(0.5) translateY(60px);
+  animation: bouquetReveal 1.1s ease forwards;
+  filter: drop-shadow(0 30px 50px rgba(0,0,0,0.3));
+}
+
+
+@keyframes bouquetReveal {
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* REALISTIC ROSE SCENE */
+#roseScene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: linear-gradient(135deg,#fff0f4,#ffe3ea);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  z-index: 9999;
+  overflow: hidden;
+  animation: fadeIn 0.6s ease;
+}
+
+/* Single rose */
+.real-rose {
+  width: 120px;
+  opacity: 0;
+  transform: scale(0.5) translateY(30px);
+  animation: roseGrow 0.8s ease forwards;
+}
+
+/* Bouquet layout */
+.rose-bouquet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 260px;
+  margin-top: 15px;
+}
+
+/* Grow animation */
+@keyframes roseGrow {
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Falling realistic roses */
+.falling-real-rose {
+  position: fixed;
+  top: -80px;
+  width: 60px;
+  pointer-events: none;
+  animation: fallRealRose linear forwards;
+}
+
+@keyframes fallRealRose {
+  to {
+    transform: translateY(120vh) rotate(180deg);
+    opacity: 0;
+  }
+}
+
 
 /* Box */
 .gift .box {
@@ -160,6 +273,44 @@
 @keyframes giftBounce {
   0%,100% { transform:translateY(0); }
   50% { transform:translateY(-6px); }
+}
+/* Floating Toast Message */
+.toast-message {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 20px;
+  font-size: 14px;
+  text-align: center;
+  max-width: 90%;
+  
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  
+  opacity: 0;
+  z-index: 10000;
+  pointer-events: none;
+  
+  animation: toastIn 0.4s ease forwards;
+}
+
+@keyframes toastIn {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
 }
 
 /* MUSIC ROOM */
@@ -936,6 +1087,36 @@ window.addEventListener("load", () => {
   }, window.innerWidth < 600 ? 600 : 350);
 });
 
+function showRoseNote() {
+  const toast = document.createElement("div");
+  toast.className = "toast-message";
+  toast.innerText = "For you… always more ❤️";
+
+  document.body.appendChild(toast);
+
+  // Remove after 5 seconds
+  setTimeout(() => {
+    toast.style.animation = "toastOut 0.4s ease forwards";
+    setTimeout(() => toast.remove(), 400);
+  }, 5000);
+}
+
+
+
+function showMusicNote() {
+  const toast = document.createElement("div");
+  toast.className = "toast-message";
+  toast.innerText = "Shemikanam nalla thonda vedhana and choma ollappa padiyatha resam indo ennu ariyulla 🥲";
+
+  document.body.appendChild(toast);
+
+  // Remove after 8 seconds
+  setTimeout(() => {
+    toast.style.animation = "toastOut 0.4s ease forwards";
+    setTimeout(() => toast.remove(), 400);
+  }, 8000);
+}
+
 function playDisc(index, element) {
   // Stop previous
   if (currentAudio) {
@@ -1000,7 +1181,7 @@ function openMusicRoom() {
 
   room.innerHTML = `
     <div class="music-container">
-      <h2 style="margin-bottom:20px;">Oru Song ayalo 🎶</h2>
+      <h2 style="margin-bottom:20px;">Ente vaka Oru Song ayalo 🤓🎶</h2>
       ${discsHTML}
       <div style="margin-top:30px;">
         <button onclick="pauseMusic()">Pause</button>
@@ -1010,6 +1191,110 @@ function openMusicRoom() {
   `;
 
   document.body.appendChild(room);
+}
+let roseStep = 1;
+
+function startRoseScenario() {
+  roseStep = 1;
+  showRoseStep();
+}
+
+function showRoseStep() {
+  const scene = document.createElement("div");
+  scene.id = "roseScene";
+
+  let rosesHTML = "";
+
+  // 1 rose
+  if (roseStep === 1) {
+    rosesHTML = `
+      <img src="rose.png" class="real-rose">
+    `;
+  }
+
+  // 2 roses
+  else if (roseStep === 2) {
+    rosesHTML = `
+      <div class="rose-bouquet">
+        <img src="rose.png" class="real-rose">
+        <img src="rose.png" class="real-rose">
+      </div>
+    `;
+  }
+
+  // 5 roses (bouquet)
+  // BIG bouquet (special image)
+    else if (roseStep === 3) {
+    rosesHTML = `
+        <img src="big_bouquet.png" class="big-bouquet">
+    `;
+    }
+
+
+  scene.innerHTML = `
+    <h2 style="color:#b21e35;">Ith mathiyo? 🌹</h2>
+    ${rosesHTML}
+    <div style="margin-top:20px;">
+      <button onclick="roseEnough()">Mathi ❤️</button>
+      <button onclick="roseNotEnough()">Ith mathiyalla</button>
+    </div>
+  `;
+
+  document.body.appendChild(scene);
+
+}
+
+function roseEnough() {
+  const scene = document.getElementById("roseScene");
+  if (scene) scene.remove();
+  yesClicked(); // or openForYou() if you prefer returning
+}
+
+function roseNotEnough() {
+  const scene = document.getElementById("roseScene");
+
+  // If user clicks NOT ENOUGH on 3rd step
+  if (roseStep === 3) {
+
+    // Show popup first
+    showRoseNote();
+
+    // Start rose rain after a small delay
+    setTimeout(() => {
+      if (scene) scene.remove();
+      startRoseRain();
+    }, 800);
+
+    return;
+  }
+
+  // Normal flow for step 1 and 2
+  if (scene) scene.remove();
+  roseStep++;
+  showRoseStep();
+}
+
+
+function startRoseRain() {
+  const duration = 5000;
+
+  const interval = setInterval(() => {
+    const rose = document.createElement("img");
+    rose.src = "rose.png";
+    rose.className = "falling-real-rose";
+
+    rose.style.left = Math.random() * window.innerWidth + "px";
+    rose.style.animationDuration = (4 + Math.random() * 2) + "s";
+    rose.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+    document.body.appendChild(rose);
+    setTimeout(() => rose.remove(), 6000);
+  }, 120);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    openForYou(); // return after 5 sec
+  }, duration);
 }
 
 
@@ -1173,31 +1458,41 @@ function openForYou() {
 
       <div style="
         display:flex;
-        justify-content:space-around;
-        gap:20px;
+        justify-content:center;
+        align-items:flex-start;
+        gap:32px;
         flex-wrap:wrap;
+        padding:10px 10px 0 10px;
+        margin-top:10px;
         ">
 
-        <div class="gift" onclick="unwrapGift(this,'verse')">
-            <div class="box"></div>
-            <div class="ribbon"></div>
-            <div class="label">Bible Verse</div>
-        </div>
 
-        <div class="gift" onclick="unwrapGift(this,'letter')">
-            <div class="box"></div>
-            <div class="ribbon"></div>
-            <div class="label">Letter</div>
-        </div>
+    <div class="gift" onclick="unwrapGift(this,'verse')">
+        <div class="box"></div>
+        <div class="ribbon"></div>
+        <div class="label">Bible Verse</div>
+    </div>
 
-        <!-- NEW MUSIC GIFT -->
-        <div class="gift" onclick="unwrapGift(this,'music')">
-            <div class="box"></div>
-            <div class="ribbon"></div>
-            <div class="label">Oru Song ayalo 🎵</div>
-        </div>
+    <div class="gift" onclick="unwrapGift(this,'letter')">
+        <div class="box"></div>
+        <div class="ribbon"></div>
+        <div class="label">Letter</div>
+    </div>
 
-        </div>
+    <div class="gift" onclick="unwrapGift(this,'music')">
+        <div class="box"></div>
+        <div class="ribbon"></div>
+        <div class="label">Ente vaka Oru Song ayalo 🤓🎶</div>
+    </div>
+
+    <div class="gift" onclick="unwrapGift(this,'rose')">
+        <div class="box"></div>
+        <div class="ribbon"></div>
+        <div class="label">A small surprise 🌹</div>
+    </div>
+
+    </div>
+
 
 
 
@@ -1230,13 +1525,21 @@ function unwrapGift(element, type) {
 
     if (type === "verse") {
       openVerse();
+
     } else if (type === "letter") {
       openLetter();
+
     } else if (type === "music") {
       openMusicRoom();
+      showMusicNote();
+
+    } else if (type === "rose") {
+      startRoseScenario();
     }
+
   }, 500);
 }
+
 
 function showDecoyLetter() {
   document.body.innerHTML = `
