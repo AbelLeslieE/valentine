@@ -17,16 +17,23 @@
     min-height: 100dvh;
     font-family: "Segoe UI", Arial, sans-serif;
 
-    overflow-y: scroll;   /* ✅ FORCE SCROLLBAR */
+    overflow-y: scroll;
     overflow-x: hidden;
 
-    background: linear-gradient(135deg, #ffe6eb, #fff1f5, #ffd6e0);
-    background-size: 400% 400%;
-    animation: bgMove 18s ease infinite;
+    background: linear-gradient(
+      135deg,
+      #ff4e63 0%,
+      #ff5f6f 25%,
+      #ff7380 55%,
+      #ff8f8b 80%,
+      #ffa29a 100%
+    );
+
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
@@ -305,19 +312,24 @@
     width: 360px;
     max-width: 90vw;
 
-    background: rgba(255, 255, 255, 0.65);  /* soft glass */
-    backdrop-filter: blur(12px);             /* premium glass effect */
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
 
-    box-shadow: 0 25px 50px rgba(255, 105, 135, 0.25);
+    box-shadow:
+        0 25px 60px rgba(178, 30, 53, 0.25),
+        0 8px 20px rgba(0,0,0,0.08);
+
     z-index: 2;
-  }
+    }
+
 
 
   h1 {
-    color: #8b1e1e;
+    color: #b21e35;
     margin-bottom: 30px;
     font-size: clamp(20px, 5vw, 26px);
-  }
+    }
+
 
   .bunny {
     margin-bottom: 35px;
@@ -477,9 +489,11 @@
 }
 
 .yes {
-  background: linear-gradient(135deg, #ff5f8a, #ff2f68);
+  background: linear-gradient(135deg, #ff4e63, #ff7a85);
+  box-shadow: 0 10px 25px rgba(255,78,99,0.4);
   animation: pulse 1.6s infinite;
 }
+
 
 
   .yes-wrapper {
@@ -488,10 +502,11 @@
   }
 
   .no {
-    background: linear-gradient(135deg, #8fd3a8, #5cbf8a);
-    transition: transform 0.3s ease, opacity 0.4s ease;
-    min-width: 130px;
-  }
+    background: linear-gradient(135deg, #ffd1d6, #ff9aa6);
+    color: #b21e35;
+    box-shadow: 0 6px 15px rgba(178,30,53,0.15);
+    }
+
 
   /* 🤭 Card shake */
   @keyframes shake {
@@ -723,12 +738,12 @@ button {
 
   /* 🌸 Falling emojis */
   const fallingEmojis = [
-    "❤️", "💖", "💕", "💗",
+   "💖", "💕", "💗",
     "💘", "💝", 
   ];
 
   /* 💕 Falling animation */
-  setInterval(() => {
+  const heartInterval = setInterval(() => {
     const h = document.createElement("div");
     h.className = "falling-heart";
 
@@ -745,8 +760,6 @@ button {
     setTimeout(() => h.remove(), 9000);
   }, window.innerWidth < 600 ? 600 : 350);
 
-/* 🔐 Letter state */
-let letterStage = 0;
 function openGift(type) {
   closeForYou();
 
@@ -769,6 +782,7 @@ function closeForYou() {
 }
 
 function yesClicked() {
+    clearInterval(heartInterval);
 
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
@@ -782,7 +796,7 @@ function yesClicked() {
     align-items:center;
     flex-direction:column;
     text-align:center;
-    background:linear-gradient(135deg,#ffe6eb,#ffd1dc);
+    background:linear-gradient(135deg,#ff4e63,#ff8f8b);
     font-family:'Segoe UI', Arial, sans-serif;
     animation: fadeIn 2s ease;
     padding:40px 20px;
@@ -826,7 +840,9 @@ function yesClicked() {
       border-radius:30px;
       border:none;
       cursor:pointer;
-      background:linear-gradient(135deg,#ffd86b,#ffb347);
+      background:linear-gradient(135deg,#ff7a85,#ff4e63);
+      color:white;
+      box-shadow:0 10px 30px rgba(255,78,99,0.4);
       color:#5a3b00;
       font-weight:600;
       box-shadow:0 10px 30px rgba(255,215,120,0.5);
@@ -851,13 +867,9 @@ function yesClicked() {
 
 
 function openLetter() {
-  if (letterStage === 0) {
-    showDecoyLetter();
-    letterStage = 1;
-  } else {
-    showRealLetter();
-  }
+  showDecoyLetter();
 }
+
 function openForYou() {
   const modal = document.createElement("div");
 
@@ -948,19 +960,6 @@ function unwrapGift(element, type) {
     }
   }, 500);
 }
-
-function closeForYou() {
-  const modal = document.getElementById("forYouModal");
-  if (modal) modal.remove();
-}
-
-
-
-function closeForYou() {
-  const modal = document.getElementById("forYouModal");
-  if (modal) modal.remove();
-}
-
 function showDecoyLetter() {
   document.body.innerHTML = `
   <div style="
@@ -1130,58 +1129,8 @@ function typeWriter(element, text, speed = 35, callback) {
 
 
 
-function closeRealLetter() {
-  hasReadRealLetter = true;
-
-  yesClicked();
-
-  setTimeout(() => {
-    const btn = document.getElementById("letterBtn");
-    const quiet = document.getElementById("quietMessage");
-
-    if (btn) {
-      btn.classList.add("fade-out");
-
-      setTimeout(() => {
-        btn.remove();
-
-        if (quiet) {
-          quiet.innerHTML = `<div class="quiet-text">I meant every word.</div>`;
-        }
-      }, 1200);
-    }
-  }, 300);
-}
 
 
-
-
-function showYesScreen(fromLetter = false) {
-  yesClicked();
-
-  // After YES screen is rebuilt, safely update button text
-  setTimeout(() => {
-    const btn = document.getElementById("letterBtn");
-    if (btn && fromLetter) {
-      btn.innerText = "this time fr believe me click me";
-    }
-  }, 300);
-}
-
-
-
-
-  function burstHearts(x, y, count) {
-    for (let i = 0; i < count; i++) {
-      const h = document.createElement("div");
-      h.className = "heart";
-      h.innerHTML = "❤️";
-      h.style.left = x + "px";
-      h.style.top = y + "px";
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 3000);
-    }
-  }
 const noMessages = [
   "Are you sure? Please be my valentine :> 🥺",
   "Wait… Think again,Maybe you are confused... click yes 🥹 💔",
@@ -1298,16 +1247,7 @@ function noClicked() {
 
 
 
-  function returnToYesScreen() {
-    yesClicked();
 
-    setTimeout(() => {
-      const btn = document.getElementById("letterBtn");
-      if (btn) {
-        btn.innerText = "this time fr believe me click me";
-      }
-    }, 300);
-  }
 function openVerse() {
   document.body.innerHTML = `
   <div style="
