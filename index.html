@@ -8,6 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
   <link rel="preload" href="bunny.mp4" as="video" type="video/mp4">
   <link rel="preload" href="last_no_video.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="first_no.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="no2.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="no3.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="no4.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="no5.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="final_no.mp4" as="video" type="video/mp4">
 
 
 <style>
@@ -1616,7 +1622,8 @@ button {
     <h1 id="mainQuestion"></h1>
     <div id="reactionContainer"></div>
     <div class="bunny" id="mainBunny">
-    <video id="bunnyImg" autoplay loop muted playsinline preload="metadata">
+    <video id="bunnyImg" autoplay loop muted playsinline webkit-playsinline preload="metadata">
+
         <source src="bunny.mp4" type="video/mp4">
     </video>
     </div>
@@ -1635,7 +1642,8 @@ button {
 
     </div>
 <div id="videoOverlay">
-  <video id="noVideo" playsinline muted preload="auto">
+  <video id="noVideo" autoplay muted loop playsinline webkit-playsinline preload="auto">
+
     <source src="last_no_video.mp4" type="video/mp4">
   </video>
 </div>
@@ -1719,7 +1727,7 @@ window.addEventListener("load", () => {
 
     document.body.appendChild(h);
     setTimeout(() => h.remove(), 9000);
-  }, window.innerWidth < 600 ? 600 : 350);
+  }, window.innerWidth < 600 ? 900 : 350);
 });
 
 
@@ -2309,7 +2317,8 @@ function yesClicked() {
           A love built on faith, trust, and grace
         </p>
 
-        <video autoplay loop muted playsinline style="
+        <video autoplay loop muted playsinline webkit-playsinline style="
+
             width:180px;
             height:180px;
             border-radius:50%;
@@ -2791,11 +2800,11 @@ function noClicked() {
     }
 
     container.innerHTML = `
-    <video autoplay loop muted playsinline style="width:130px; display:block; margin:0 auto;">
+    <video autoplay loop muted playsinline webkit-playsinline style="width:130px; display:block; margin:0 auto;">
         <source src="${reactionGifs[gifIndex]}" type="video/mp4">
     </video>
     `;
-    }
+  }
 
 
   if (noBtn) {
@@ -2822,13 +2831,32 @@ function noClicked() {
       document.body.style.overflow = "hidden";
 
 
-      video.muted = true;        // important for mobile
-      video.playsInline = true;  // iOS fix
-      video.currentTime = 0;
+      // Reset video safely
+    video.pause();
+    video.currentTime = 0;
+    video.loop = false;
 
-      video.play().catch(err => {
-        console.log("Video play blocked:", err);
+    video.muted = true;
+    video.playsInline = true;
+
+    // Play once
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        setTimeout(() => video.play(), 300);
       });
+    }
+
+    // Ensure it closes when finished
+    video.onended = () => {
+      videoOverlay.classList.remove("show");
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+
+      video.currentTime = 0;
+    };
+
+
 
 
       video.onended = () => {
@@ -3021,4 +3049,3 @@ window.addEventListener("load", () => {
 
 </body>
 </html>
-x
