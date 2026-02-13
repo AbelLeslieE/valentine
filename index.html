@@ -11,28 +11,38 @@
 
 
 <style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
-    font-family: "Segoe UI", Arial, sans-serif;
+/* ===== CINEMATIC MOVING BACKGROUND ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: "Segoe UI", Arial, sans-serif;
 
-    overflow-y: scroll;
-    overflow-x: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
-    background: linear-gradient(
-      135deg,
-      #ff4e63 0%,
-      #ff5f6f 25%,
-      #ff7380 55%,
-      #ff8f8b 80%,
-      #ffa29a 100%
-    );
+  background: linear-gradient(
+    120deg,
+    #ff4e63,
+    #ff6f7f,
+    #ff8f8b,
+    #ff6f7f,
+    #ff4e63
+  );
+  background-size: 300% 300%;
+  animation: cinematicGradient 18s ease-in-out infinite;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+@keyframes cinematicGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 
 @keyframes blink {
   0%, 50% { opacity: 1; }
@@ -48,10 +58,272 @@
     transform: translateY(8px);
   }
 }
+/* ===== APPLE HERO SLOW ZOOM ===== */
+.hero-motion {
+  animation: heroZoom 18s ease-in-out infinite alternate;
+}
+
+@keyframes heroZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.04);
+  }
+}
+/* ===== HERO LIGHT SWEEP ===== */
+.hero-sweep {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.35),
+    transparent
+  );
+  opacity: 0;
+}
+@keyframes giftShake {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+  75% { transform: rotate(-2deg); }
+  100% { transform: rotate(0); }
+}
+
+.gift.shake {
+  animation: giftShake 0.4s ease;
+}
+
+.hero-sweep.animate {
+  animation: heroSweep 2.5s ease forwards;
+}
+
+@keyframes heroSweep {
+  0% {
+    transform: translateX(-40%) rotate(18deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(40%) rotate(18deg);
+    opacity: 0;
+  }
+}
+
+/* ===== HERO ZOOM REVEAL ===== */
+.hero-hidden {
+  opacity: 0;
+  transform: scale(1.12);
+  transition: transform 1.6s cubic-bezier(.22,.61,.36,1),
+              opacity 1.6s ease;
+}
+
+.hero-visible {
+  opacity: 1;
+  transform: scale(1);
+}
 
 .fade-out {
   animation: fadeOut 0.6s ease forwards;
   pointer-events: none;
+}
+
+/* ===== APPLE PARALLAX ===== */
+.parallax-layer {
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(.22,.61,.36,1);
+}
+
+#mainContent {
+  perspective: 1000px;
+}
+
+
+
+/* Rose buttons */
+
+.rose-yes,
+.rose-yes-final {
+  padding:12px 28px;
+  border:none;
+  border-radius:26px;
+  background:linear-gradient(135deg,#ff4e63,#ff7a85);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,0.25);
+  transition:transform 0.2s ease;
+}
+
+.rose-more {
+  padding:12px 28px;
+  border:none;
+  border-radius:26px;
+  background:linear-gradient(135deg,#ffd86b,#ffb347);
+  color:#5a3b00;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,0.25);
+  transition:transform 0.2s ease;
+}
+
+.rose-yes:hover,
+.rose-yes-final:hover,
+.rose-more:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== REALISTIC GIFT BOX ===== */
+
+.gift {
+  width: 110px;
+  text-align: center;
+  cursor: pointer;
+  margin: 12px;
+  transition: transform 0.25s ease;
+}
+
+.gift:hover {
+  transform: translateY(-6px) scale(1.03);
+}
+/* ===== Ribbon Bow ===== */
+
+.ribbon-bow {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  width: 28px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+}
+
+/* Left loop */
+.ribbon-bow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 14px;
+  height: 18px;
+  background: linear-gradient(#ffe07a,#ffc94a);
+  border-radius: 14px 14px 4px 14px;
+  transform: rotate(-25deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+/* Right loop */
+.ribbon-bow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 14px;
+  height: 18px;
+  background: linear-gradient(#ffe07a,#ffc94a);
+  border-radius: 14px 14px 14px 4px;
+  transform: rotate(25deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+.gift-box-area {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto;
+}
+
+/* Base */
+.gift-base {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 68%;
+  background: linear-gradient(145deg,#ff6f9e,#ff4d88);
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25);
+  z-index: 1;
+}
+
+/* Lid (separate piece) */
+.gift-lid {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 38%;
+  background: linear-gradient(145deg,#ff8fb5,#ff5a95);
+  border-radius: 16px 16px 6px 6px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  transform-origin: bottom;
+  transition: transform 0.6s cubic-bezier(.22,.61,.36,1);
+  z-index: 3;
+}
+
+/* Vertical ribbon */
+.ribbon-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background: linear-gradient(#ffe07a,#ffc94a);
+  transform: translateX(-50%);
+  border-radius: 6px;
+  z-index: 4;
+}
+
+/* Horizontal ribbon */
+.ribbon-h {
+  position: absolute;
+  top: 34%;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(#ffe07a,#ffc94a);
+  border-radius: 6px;
+  z-index: 4;
+}
+
+
+
+/* Opening animation */
+.gift.open .gift-lid {
+  transform: rotateX(-120deg) translateY(-8px);
+}
+
+/* Glow inside */
+.gift-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle,
+    rgba(255,220,120,0.9),
+    rgba(255,220,120,0.4),
+    transparent 70%);
+  opacity: 0;
+  border-radius: 16px;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.gift.open .gift-glow {
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+.card {
+  transform-style: preserve-3d;
 }
 
 .typing-cursor {
@@ -72,6 +344,181 @@
   animation: quietFadeIn 1.2s ease forwards;
   animation-delay: 0.2s;
 }
+/* ===== PROPOSAL CINEMATIC ===== */
+#cinematicIntro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  z-index: 300000;
+  overflow: hidden;
+}
+.intro-center.fade-out {
+  opacity: 0;
+  transform: translate(-50%, -60%);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Curtains */
+.curtain {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg,#7a0015,#ff2f68);
+  transition: transform 1.4s cubic-bezier(.77,0,.18,1);
+}
+
+.curtain.left { left: 0; }
+.curtain.right { right: 0; }
+
+#cinematicIntro.open .left {
+  transform: translateX(-100%);
+}
+
+#cinematicIntro.open .right {
+  transform: translateX(100%);
+}
+/* Center */
+.intro-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* keep centering here */
+  text-align: center;
+  color: white;
+  z-index: 2;
+}
+/* ❤️ Hearts behind YES popup */
+.yes-burst-heart {
+  position: fixed;
+  font-size: 22px;
+  pointer-events: none;
+  z-index: 199999;
+  animation: yesBurst 1.2s ease-out forwards;
+}
+
+@keyframes yesBurst {
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* YES POPUP MODAL */
+#yesPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 200000;
+  animation: fadeIn 0.4s ease;
+}
+
+.yes-popup-card {
+  background: linear-gradient(135deg,#fff8f2,#ffe2ea);
+  padding: 34px 32px;
+  border-radius: 26px;
+
+  text-align: center;
+  max-width: 320px;
+  width: 85%;
+
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  transform: scale(0.85);
+  animation:
+    yesPopupIn 0.45s cubic-bezier(.22,.61,.36,1) forwards,
+    yesGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes yesGlow {
+  0% {
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.35),
+      0 0 0 rgba(255,95,138,0);
+  }
+  50% {
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.35),
+      0 0 35px rgba(255,95,138,0.7);
+  }
+  100% {
+    box-shadow:
+      0 30px 80px rgba(0,0,0,0.35),
+      0 0 0 rgba(255,95,138,0);
+  }
+}
+
+
+/* Zoom disappear */
+.intro-heart.zoom-out {
+  transform: scale(10);
+  opacity: 0;
+}
+
+/* Tap text */
+.tap-text {
+  margin-top: 16px;
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+/* Heartbeat (scale only, center stays intact) */
+@keyframes heartbeatIntro {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.12); }
+  60%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* ===== GLOW LIGHT SWEEP ===== */
+.light-sweep {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+#cinematicIntro.open .light-sweep {
+  animation: sweep 1.6s ease forwards;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-40%) rotate(20deg); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateX(40%) rotate(20deg); opacity: 0; }
+}
+
+/* ===== HEART PARTICLES ===== */
+.particle {
+  position: fixed;
+  font-size: 18px;
+  pointer-events: none;
+  animation: explode 1.2s forwards;
+}
+
+@keyframes explode {
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.5);
+    opacity: 0;
+  }
+}
 
 @keyframes quietFadeIn {
   from {
@@ -83,15 +530,147 @@
     transform: translateY(0);
   }
 }
-/* 🎥 Fullscreen Video Overlay */
+/* ===== CINEMATIC INTRO ===== */
+#cinematicIntro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: #000;
+  z-index: 200000;
+  overflow: hidden;
+}
+
+/* Curtains */
+.curtain {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg,#7a0015,#ff2f68);
+  transition: transform 1.2s cubic-bezier(.77,0,.18,1);
+}
+
+.curtain.left { left: 0; }
+.curtain.right { right: 0; }
+
+/* Opening animation */
+#cinematicIntro.open .left {
+  transform: translateX(-100%);
+}
+
+#cinematicIntro.open .right {
+  transform: translateX(100%);
+}
+
+/* Center content */
+.intro-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+}
+
+.intro-heart {
+  font-size: clamp(140px, 18vw, 240px); /* BIG and responsive */
+  line-height: 1;
+  animation: heartbeatIntro 1.6s infinite;
+  cursor: pointer;
+
+  transition: transform 0.9s cubic-bezier(.22,.61,.36,1),
+              opacity 0.9s ease;
+
+  filter: drop-shadow(0 20px 40px rgba(255, 80, 120, 0.4));
+}
+
+
+
+@keyframes heartbeatIntro {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+
+.tap-text {
+  margin-top: 15px;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+/* Heart explosion particles */
+.particle {
+  position: fixed;
+  font-size: 18px;
+  pointer-events: none;
+  animation: explode 1.2s forwards;
+}
+
+@keyframes explode {
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* ===== INTRO SCREEN ===== */
+#introScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  background: linear-gradient(135deg,#ff4e63,#ff8f8b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100000;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+  transition: opacity 1s ease, visibility 1s ease;
+}
+
+/* Heart animation */
+.heart-loader {
+  font-size: 60px;
+  animation: heartbeatIntro 1.2s infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes heartbeatIntro {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.25); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.intro-content h2 {
+  font-weight: 400;
+  font-size: 20px;
+  opacity: 0.9;
+}
+
+/* Hidden state */
+#introScreen.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+
 #videoOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100dvh; /* better for mobile */
+  height: 100dvh;
 
-  background: black;
+  background: #000;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,7 +679,10 @@
   pointer-events: none;
   z-index: 9999;
   transition: opacity 0.4s ease;
+
+  overflow: hidden; /* important */
 }
+
 @keyframes glowPulse {
   0% { box-shadow: 0 0 30px rgba(255,200,80,0.4); }
   50% { box-shadow: 0 0 70px rgba(255,200,80,0.9); }
@@ -118,17 +700,8 @@
   overflow: hidden;
 }
 /* Gift container */
-.gift {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  cursor: pointer;
-  text-align: center;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
+
 .gift .label {
   margin-top: 10px;
   font-size: 13px;
@@ -136,9 +709,8 @@
   line-height: 1.3;
   text-align: center;
 }
-.gift {
-  transition: transform 0.25s ease;
-}
+
+
 
 .gift:hover {
   transform: translateY(-6px);
@@ -239,28 +811,9 @@
 }
 
 
-/* Box */
-.gift .box {
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg,#ff7aa8,#ff4d88);
-  border-radius:10px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.2);
-  animation:giftBounce 1.6s ease-in-out infinite;
-}
 
-/* Ribbon vertical */
-.gift .ribbon {
-  position:absolute;
-  top:0;
-  left:50%;
-  width:14px;
-  height:100%;
-  background:#ffd86b;
-  transform:translateX(-50%);
-  border-radius:4px;
-  transition:transform 0.4s ease, opacity 0.4s ease;
-}
+
+
 
 /* Label */
 .gift .label {
@@ -270,10 +823,7 @@
 }
 
 /* Bounce */
-@keyframes giftBounce {
-  0%,100% { transform:translateY(0); }
-  50% { transform:translateY(-6px); }
-}
+
 /* Floating Toast Message */
 .toast-message {
   position: fixed;
@@ -472,18 +1022,31 @@
   font-weight: 600;
 }
 
-/* Unwrap animation */
-.gift.open .box {
-  animation:none;
-  transform:scale(1.2);
-  opacity:0;
-  transition:all 0.5s ease;
+
+/* Gift container */
+
+
+
+
+
+
+
+/* Label */
+.gift .label {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6b4b00;
 }
 
-.gift.open .ribbon {
-  transform:translateX(-50%) scaleY(0);
-  opacity:0;
-}
+
+
+
+
+
+
+
+
+
 
 /* Moving light beam */
 .reveal-container::before {
@@ -512,20 +1075,14 @@
     top: 100%;
   }
 }
-.gift-box {
-  font-size:48px;
-  transition:transform 0.25s ease;
-  animation:giftBounce 1.6s ease-in-out infinite;
-}
 
-.gift-box:hover {
-  transform:scale(1.15);
-}
+
 
 @keyframes giftBounce {
-  0%,100% { transform:translateY(0); }
-  50% { transform:translateY(-6px); }
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
 }
+
 
 /* Golden text glow */
 .divine-text {
@@ -549,11 +1106,26 @@
   opacity: 1;
   pointer-events: auto;
 }
+/* Fullscreen cinematic video */
+/* Responsive video – fits screen without cropping */
 #videoOverlay video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  max-width: 100vw;
+  max-height: 100dvh;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain; /* keeps full video visible */
+  background: black;   /* fills empty space if aspect ratio differs */
 }
+
+
+
 /* Floating golden dust */
 @keyframes dustFloat {
   0% {
@@ -863,6 +1435,23 @@
       opacity: 0;
     }
   }
+  /* ===== DEPTH LAYERS ===== */
+  .depth-back {
+    opacity: 0.35;
+    filter: blur(1px);
+    z-index: 0;
+  }
+
+  .depth-mid {
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  .depth-front {
+    opacity: 1;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    z-index: 2;
+  }
 
   /* 📸 FULL PHOTO OVERLAY */
   #photoOverlay {
@@ -967,6 +1556,7 @@
 
 
 
+
   /* 🔒 FORCE BUTTONS TO BE CLICKABLE */
 .yes,
 .no {
@@ -1003,6 +1593,24 @@ button {
 </head>
 
 <body>
+<!-- PROPOSAL CINEMATIC INTRO -->
+<div id="cinematicIntro">
+  <div class="curtain left"></div>
+  <div class="curtain right"></div>
+
+  <div class="intro-center">
+    <div class="intro-heart" id="introHeart">❤️‍🩹</div>
+    <p class="tap-text">Tap to open</p>
+  </div>
+
+  <!-- Glow sweep layer -->
+  <div class="light-sweep"></div>
+</div>
+
+<div id="mainContent" class="hero-hidden">
+  <div class="hero-sweep" id="heroSweep"></div>
+
+
 
   <div class="card">
     <h1 id="mainQuestion"></h1>
@@ -1012,6 +1620,7 @@ button {
         <source src="bunny.mp4" type="video/mp4">
     </video>
     </div>
+
 
 
   
@@ -1024,15 +1633,22 @@ button {
     </div>
   </div>
 
-  <!-- 🎥 Video Overlay -->
-  <div id="videoOverlay">
-    <video id="noVideo" playsinline muted autoplay preload="auto">
-      <source src="last_no_video.mp4" type="video/mp4">
-    </video>
-  </div>
-    
+    </div>
+<div id="videoOverlay">
+  <video id="noVideo" playsinline muted preload="auto">
+    <source src="last_no_video.mp4" type="video/mp4">
+  </video>
+</div>
+
 
   <script>
+  let yesFlowStarted = false;
+  let mainPageHTML = "";
+  let giftsPageHTML = "";
+  let letterTypingStarted = false;
+  let letterTypingTimer = null;
+
+
   let hasReadRealLetter = false;
   let yesScale = 1;
   let noMoves = 0;
@@ -1069,9 +1685,28 @@ button {
 let heartInterval;
 
 window.addEventListener("load", () => {
+  mainPageHTML = document.body.innerHTML;
   heartInterval = setInterval(() => {
     const h = document.createElement("div");
     h.className = "falling-heart";
+  /* Depth layer selection */
+  const depthRand = Math.random();
+
+  if (depthRand < 0.33) {
+    h.classList.add("depth-back");
+    h.style.fontSize = (18 + Math.random() * 10) + "px";
+    h.style.animationDuration = (8 + Math.random() * 4) + "s";
+  }
+  else if (depthRand < 0.66) {
+    h.classList.add("depth-mid");
+    h.style.fontSize = (26 + Math.random() * 14) + "px";
+    h.style.animationDuration = (6 + Math.random() * 3) + "s";
+  }
+  else {
+    h.classList.add("depth-front");
+    h.style.fontSize = (36 + Math.random() * 20) + "px";
+    h.style.animationDuration = (4 + Math.random() * 2) + "s";
+  }
 
     h.innerHTML = fallingEmojis[
       Math.floor(Math.random() * fallingEmojis.length)
@@ -1086,6 +1721,223 @@ window.addEventListener("load", () => {
     setTimeout(() => h.remove(), 9000);
   }, window.innerWidth < 600 ? 600 : 350);
 });
+
+
+
+
+/* ===== CINEMATIC ELEMENT REFERENCES ===== */
+const intro = document.getElementById("cinematicIntro");
+const mainContent = document.getElementById("mainContent");
+const introHeart = document.getElementById("introHeart");
+if (introHeart) {
+  introHeart.addEventListener("click", () => {
+    // Stop further clicks
+    introHeart.style.pointerEvents = "none";
+    const center = document.querySelector(".intro-center");
+    if (center) center.classList.add("fade-out");
+
+    // Heart zoom effect
+    introHeart.classList.add("zoom-out");
+
+    // Start heart particles slightly after zoom begins
+    setTimeout(() => {
+      explodeHeart();
+    }, 200);
+
+    // Open curtains after zoom
+    setTimeout(() => {
+      intro.classList.add("open");
+    }, 500);
+
+    // Apple hero reveal
+    setTimeout(() => {
+    if (mainContent) {
+      mainContent.classList.remove("hero-hidden");
+      mainContent.classList.add("hero-visible");
+
+      // Start slow Apple background motion
+      mainContent.classList.add("hero-motion");
+
+      // Trigger light sweep once
+      const sweep = document.getElementById("heroSweep");
+      if (sweep) {
+        sweep.classList.add("animate");
+      }
+    }
+  }, 900);
+
+
+
+    // Remove intro
+    // Remove intro shortly after curtains open
+    setTimeout(() => {
+      intro.remove();
+      enableParallax();   // start parallax after intro fully gone
+    }, 1500);
+
+  });
+}
+
+
+/* ===== APPLE-STYLE PARALLAX ===== */
+
+let parallaxEnabled = false;
+
+function enableParallax() {
+  parallaxEnabled = true;
+}
+
+function disableParallax() {
+  parallaxEnabled = false;
+}
+
+/* Desktop mouse parallax */
+document.addEventListener("mousemove", (e) => {
+  if (!parallaxEnabled) return;
+
+  const content = document.getElementById("mainContent");
+  const card = document.querySelector(".card");
+
+  if (!content || !card) return;
+
+  const x = (e.clientX / window.innerWidth - 0.5);
+  const y = (e.clientY / window.innerHeight - 0.5);
+
+  /* Slower, subtle Apple-style movement */
+  const moveX = x * 8;
+  const moveY = y * 8;
+
+  content.style.transform = `
+    translate(${moveX}px, ${moveY}px)
+  `;
+
+  card.style.transform = `
+    rotateY(${x * 2.5}deg)
+    rotateX(${-y * 2.5}deg)
+    translateZ(10px)
+  `;
+});
+
+function yesHeartBurst() {
+  const count = 28;
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  for (let i = 0; i < count; i++) {
+    const heart = document.createElement("div");
+    heart.className = "yes-burst-heart";
+    heart.innerHTML = "❤️";
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 120 + Math.random() * 120;
+
+    const x = Math.cos(angle) * distance + "px";
+    const y = Math.sin(angle) * distance + "px";
+
+    heart.style.left = centerX + "px";
+    heart.style.top = centerY + "px";
+    heart.style.setProperty("--x", x);
+    heart.style.setProperty("--y", y);
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1200);
+  }
+}
+
+
+function returnToMainAndOpenGifts() {
+  document.body.innerHTML = mainPageHTML;
+
+  // small delay so DOM loads
+  setTimeout(() => {
+    openForYou();
+  }, 50);
+}
+
+/* ===== Mobile slow floating motion ===== */
+
+function mobileFloat() {
+  if (window.innerWidth > 768) return;
+
+  const content = document.getElementById("mainContent");
+  if (!content) return;
+
+  let t = 0;
+
+  setInterval(() => {
+    if (!parallaxEnabled) return;
+
+    t += 0.004;
+    const x = Math.sin(t) * 4;
+    const y = Math.cos(t) * 4;
+
+
+    content.style.transform = `translate(${x}px, ${y}px)`;
+  }, 16);
+}
+
+mobileFloat();
+
+
+function startProposalIntro() {
+  intro.style.pointerEvents = "none";
+
+  // 1. Heart explosion
+  explodeHeart();
+
+  // 2. Open curtains + glow
+  setTimeout(() => {
+    intro.classList.add("open");
+  }, 200);
+
+  // 3. Apple-style zoom reveal
+  setTimeout(() => {
+    if (mainContent) {
+      mainContent.classList.remove("hero-hidden");
+      mainContent.classList.add("hero-visible");
+    }
+  }, 900);
+
+
+
+  // 4. Remove intro
+  setTimeout(() => {
+    intro.remove();
+  }, 1800);
+}
+
+function explodeHeart() {
+  const count = 45;
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.innerHTML = "💖";
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 220 + Math.random() * 160;
+
+    const x = Math.cos(angle) * distance + "px";
+    const y = Math.sin(angle) * distance + "px";
+
+    p.style.left = "50%";
+    p.style.top = "50%";
+    p.style.setProperty("--x", x);
+    p.style.setProperty("--y", y);
+
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+}
+
+
+
+
+
+
+
+
+
 
 function showRoseNote() {
   const toast = document.createElement("div");
@@ -1200,79 +2052,127 @@ function startRoseScenario() {
 }
 
 function showRoseStep() {
+
+  // Remove any existing scene first
+  const old = document.getElementById("roseScene");
+  if (old) old.remove();
+
   const scene = document.createElement("div");
   scene.id = "roseScene";
 
   let rosesHTML = "";
+  let message = "";
+  let buttonsHTML = "";
 
-  // 1 rose
+  // Step 1
   if (roseStep === 1) {
+    message = "Ith mathiyo? 🌹";
+
     rosesHTML = `
       <img src="rose.png" class="real-rose">
     `;
+
+    buttonsHTML = `
+      <button onclick="roseEnough()" class="rose-yes">Mathi ❤️</button>
+      <button onclick="roseNotEnough()" class="rose-more">More</button>
+    `;
   }
 
-  // 2 roses
+  // Step 2
   else if (roseStep === 2) {
+    message = "Kurachu koodi venam alle? 😊";
+
     rosesHTML = `
       <div class="rose-bouquet">
         <img src="rose.png" class="real-rose">
         <img src="rose.png" class="real-rose">
       </div>
     `;
+
+    buttonsHTML = `
+      <button onclick="roseEnough()" class="rose-yes">Mathi ❤️</button>
+      <button onclick="roseNotEnough()" class="rose-more">More</button>
+    `;
   }
 
-  // 5 roses (bouquet)
-  // BIG bouquet (special image)
-    else if (roseStep === 3) {
-    rosesHTML = `
-        <img src="big_bouquet.png" class="big-bouquet">
-    `;
-    }
+  // Step 3 (FINAL)
+  else if (roseStep === 3) {
+    message = "Ippo mathiyo…? 💐❤️";
 
+    rosesHTML = `
+      <img src="big_bouquet.png" class="big-bouquet">
+    `;
+
+    // Only YES button
+    buttonsHTML = `
+      <button onclick="roseEnough()" class="rose-yes-final">
+        Yes ❤️
+      </button>
+    `;
+  }
 
   scene.innerHTML = `
-    <h2 style="color:#b21e35;">Ith mathiyo? 🌹</h2>
+    <h2 style="
+      color:#b21e35;
+      font-size:28px;
+      margin-bottom:20px;
+      text-align:center;
+    ">
+      ${message}
+    </h2>
+
     ${rosesHTML}
-    <div style="margin-top:20px;">
-      <button onclick="roseEnough()">Mathi ❤️</button>
-      <button onclick="roseNotEnough()">Ith mathiyalla</button>
+
+    <div style="
+      margin-top:25px;
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      flex-wrap:wrap;
+    ">
+      ${buttonsHTML}
     </div>
   `;
 
   document.body.appendChild(scene);
-
 }
 
 function roseEnough() {
   const scene = document.getElementById("roseScene");
   if (scene) scene.remove();
-  yesClicked(); // or openForYou() if you prefer returning
-}
 
-function roseNotEnough() {
-  const scene = document.getElementById("roseScene");
-
-  // If user clicks NOT ENOUGH on 3rd step
-  if (roseStep === 3) {
-
-    // Show popup first
-    showRoseNote();
-
-    // Start rose rain after a small delay
-    setTimeout(() => {
-      if (scene) scene.remove();
-      startRoseRain();
-    }, 800);
-
+  // Step 1 or 2 → go to next step
+  if (roseStep < 3) {
+    roseStep++;
+    showRoseStep();
     return;
   }
 
-  // Normal flow for step 1 and 2
+  // Final step → show special popup
+  showRoseNote();
+
+  // After a short delay, return to Gifts
+  setTimeout(() => {
+    openForYou();
+  }, 800);
+}
+
+
+function roseNotEnough() {
+  const scene = document.getElementById("roseScene");
   if (scene) scene.remove();
+
   roseStep++;
+  if (roseStep > 3) roseStep = 3;
+
   showRoseStep();
 }
+
+
+
+
+
+
 
 
 function startRoseRain() {
@@ -1322,95 +2222,140 @@ function openGift(type) {
 
 function closeForYou() {
   const modal = document.getElementById("forYouModal");
-  if (modal) modal.remove();
+  if (modal) {
+    modal.remove();
+  }
 }
 
-function yesClicked() {
-    clearInterval(heartInterval);
 
+function yesClicked() {
+
+  // Show popup ONLY the first time
+  if (yesFlowStarted) {
+    openForYou();   // after first time, just go to gifts
+    return;
+  }
+
+  yesFlowStarted = true;
+
+  // Reset parallax transforms
+  const content = document.getElementById("mainContent");
+  if (content) content.style.transform = "translate(0,0)";
+
+  const card = document.querySelector(".card");
+  if (card) card.style.transform = "";
+
+  // 🔥 YES popup
+  const popup = document.createElement("div");
+  popup.id = "yesPopup";
+  popup.innerHTML = `
+    <div class="yes-popup-card">
+      <h2>I knew you would click Yes 😏😌</h2>
+    </div>
+  `;
+  document.body.appendChild(popup);
+
+  // ❤️ Heart burst
+  yesHeartBurst();
+
+  // Lock scroll
   document.documentElement.style.overflow = "hidden";
   document.body.style.overflow = "hidden";
 
-  document.body.innerHTML = `
-  <div style="
-    min-height:100dvh;
-    width:100vw;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    text-align:center;
-    background:linear-gradient(135deg,#ff4e63,#ff8f8b);
-    font-family:'Segoe UI', Arial, sans-serif;
-    animation: fadeIn 2s ease;
-    padding:40px 20px;
-    overflow-y:auto;
-    overflow-x:hidden;
-  ">
+  // ===== Wait 5 seconds (popup duration) =====
+  setTimeout(() => {
 
-    <h1 style="
-      font-size:clamp(32px,7vw,52px);
-      color:#ff2f68;
-      margin-bottom:25px;
-      font-weight:500;
-      animation: rise 1.5s ease;
-    ">
-      This moment means everything 💖
-    </h1>
+    // Fade entire page out smoothly
+    document.body.style.transition = "opacity 0.6s ease";
+    document.body.style.opacity = "0";
 
-    <p style="
-      font-size:clamp(16px,4vw,20px);
-      color:#a04454;
-      margin-bottom:18px;
-      animation: fadeIn 2.5s ease;
-    ">
-      A love built on faith, trust, and grace
-    </p>
+    // After fade-out, change content
+    setTimeout(() => {
 
-    <video autoplay loop muted playsinline style="
-        width:180px;
-        height:180px;
-        border-radius:50%;
-        object-fit:cover;
-        box-shadow:0 20px 50px rgba(255,80,120,0.5);
-        margin:40px 0 30px;
+      document.body.innerHTML = `
+      <div style="
+        min-height:100dvh;
+        width:100vw;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        flex-direction:column;
+        text-align:center;
+        background:linear-gradient(135deg,#ff4e63,#ff8f8b);
+        font-family:'Segoe UI', Arial, sans-serif;
+        animation: fadeIn 1.2s ease;
+        padding:40px 20px;
+        overflow-y:auto;
+        overflow-x:hidden;
+      ">
+
+        <h1 style="
+          font-size:clamp(32px,7vw,52px);
+          color:#ff2f68;
+          margin-bottom:25px;
+          font-weight:500;
+          animation: rise 1.2s ease;
         ">
-        <source src="photo1.mp4" type="video/mp4">
+          This moment means everything 💖
+        </h1>
+
+
+        <p style="
+          font-size:clamp(16px,4vw,20px);
+          color:#a04454;
+          margin-bottom:18px;
+          animation: fadeIn 1.8s ease;
+        ">
+          A love built on faith, trust, and grace
+        </p>
+
+        <video autoplay loop muted playsinline style="
+            width:180px;
+            height:180px;
+            border-radius:50%;
+            object-fit:cover;
+            box-shadow:0 20px 50px rgba(255,80,120,0.5);
+            margin:40px 0 30px;
+        ">
+            <source src="photo1.mp4" type="video/mp4">
         </video>
 
+        <button onclick="openForYou()" style="
+          margin-top:10px;
+          padding:16px 40px;
+          font-size:17px;
+          border-radius:30px;
+          border:none;
+          cursor:pointer;
+          background:linear-gradient(135deg,#ff7a85,#ff4e63);
+          color:#5a3b00;
+          font-weight:600;
+          box-shadow:0 10px 30px rgba(255,215,120,0.5);
+        ">
+          🎁 GIFTS :>
+        </button>
 
-    <button onclick="openForYou()" style="
-      margin-top:10px;
-      padding:16px 40px;
-      font-size:17px;
-      border-radius:30px;
-      border:none;
-      cursor:pointer;
-      background:linear-gradient(135deg,#ff7a85,#ff4e63);
-      color:white;
-      box-shadow:0 10px 30px rgba(255,78,99,0.4);
-      color:#5a3b00;
-      font-weight:600;
-      box-shadow:0 10px 30px rgba(255,215,120,0.5);
-    ">
-      🎁 GIFTS :>
-    </button>
+        <p style="
+          margin-top:25px;
+          font-size:18px;
+          color:#ff5f8a;
+          animation: fadeIn 3s ease;
+        ">
+          ❤️ This is just the beginning ❤️
+        </p>
 
+      </div>
+      `;
 
-    <div id="quietMessage"></div>
+      // Fade new content back in
+      document.body.style.opacity = "1";
+      giftsPageHTML = document.body.innerHTML;
+    }, 600); // fade duration
 
-    <p style="
-      margin-top:25px;
-      font-size:18px;
-      color:#ff5f8a;
-      animation: fadeIn 5s ease;
-    ">
-      ❤️ This is just the beginning ❤️
-    </p>
-
-  </div>
-  `;
+  }, 5000); // popup stays for 5 seconds
 }
+
+
 
 
 function openLetter() {
@@ -1419,8 +2364,8 @@ function openLetter() {
 
 function openForYou() {
   const modal = document.createElement("div");
-
   modal.id = "forYouModal";
+
   modal.innerHTML = `
   <div style="
     position:fixed;
@@ -1460,45 +2405,64 @@ function openForYou() {
         display:flex;
         justify-content:center;
         align-items:flex-start;
-        gap:32px;
+        gap:28px;
         flex-wrap:wrap;
-        padding:10px 10px 0 10px;
         margin-top:10px;
-        ">
+      ">
 
+        <!-- Gift 1 -->
+        <div class="gift" onclick="unwrapGift(this,'verse')">
+          <div class="gift-box-area">
+            <div class="gift-base"></div>
+            <div class="gift-lid"></div>
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="ribbon-bow"></div>
+            <div class="gift-glow"></div>
+          </div>
+          <div class="label">Bible Verse</div>
+        </div>
 
-    <div class="gift" onclick="unwrapGift(this,'verse')">
-        <div class="box"></div>
-        <div class="ribbon"></div>
-        <div class="label">Bible Verse</div>
-    </div>
+        <!-- Gift 2 -->
+        <div class="gift" onclick="unwrapGift(this,'letter')">
+          <div class="gift-box-area">
+            <div class="gift-base"></div>
+            <div class="gift-lid"></div>
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="ribbon-bow"></div>
+            <div class="gift-glow"></div>
+          </div>
+          <div class="label">Letter</div>
+        </div>
 
-    <div class="gift" onclick="unwrapGift(this,'letter')">
-        <div class="box"></div>
-        <div class="ribbon"></div>
-        <div class="label">Letter</div>
-    </div>
+        <!-- Gift 3 -->
+        <div class="gift" onclick="unwrapGift(this,'music')">
+          <div class="gift-box-area">
+            <div class="gift-base"></div>
+            <div class="gift-lid"></div>
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="ribbon-bow"></div>
+            <div class="gift-glow"></div>
+          </div>
+          <div class="label">Song 🎶</div>
+        </div>
 
-    <div class="gift" onclick="unwrapGift(this,'music')">
-        <div class="box"></div>
-        <div class="ribbon"></div>
-        <div class="label">Ente vaka Oru Song ayalo 🤓🎶</div>
-    </div>
+        <!-- Gift 4 -->
+        <div class="gift" onclick="unwrapGift(this,'rose')">
+          <div class="gift-box-area">
+            <div class="gift-base"></div>
+            <div class="gift-lid"></div>
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="ribbon-bow"></div>
+            <div class="gift-glow"></div>
+          </div>
+          <div class="label">Surprise 🌹</div>
+        </div>
 
-    <div class="gift" onclick="unwrapGift(this,'rose')">
-        <div class="box"></div>
-        <div class="ribbon"></div>
-        <div class="label">A small surprise 🌹</div>
-    </div>
-
-    </div>
-
-
-
-
-
-
-
+      </div>
 
       <button onclick="closeForYou()" style="
         margin-top:30px;
@@ -1517,28 +2481,49 @@ function openForYou() {
 
   document.body.appendChild(modal);
 }
+
+
+
+
 function unwrapGift(element, type) {
-  element.classList.add("open");
+  if (element.classList.contains("open")) return;
+
+  // Shake first
+  element.classList.add("shake");
 
   setTimeout(() => {
-    closeForYou();
+    element.classList.remove("shake");
+    element.classList.add("open");
 
-    if (type === "verse") {
-      openVerse();
+    setTimeout(() => {
+      closeForYou();
 
-    } else if (type === "letter") {
-      openLetter();
+      if (type === "verse") openVerse();
+      else if (type === "letter") openLetter();
+      else if (type === "music") {
+        openMusicRoom();
+        showMusicNote();
+      }
+      else if (type === "rose") startRoseScenario();
 
-    } else if (type === "music") {
-      openMusicRoom();
-      showMusicNote();
+    }, 600);
 
-    } else if (type === "rose") {
-      startRoseScenario();
-    }
-
-  }, 500);
+  }, 400);
 }
+
+
+
+function returnToGiftsPage() {
+  if (!giftsPageHTML) return;
+
+  document.body.innerHTML = giftsPageHTML;
+
+  // reopen modal safely
+  setTimeout(() => {
+    openForYou();
+  }, 50);
+}
+
 
 
 function showDecoyLetter() {
@@ -1551,8 +2536,10 @@ function showDecoyLetter() {
     align-items:center;
     background:linear-gradient(135deg,#fff1f5,#ffe6eb);
     font-family:'Segoe UI', Arial, sans-serif;
+    position:relative;
   ">
 
+    <!-- Envelope -->
     <div id="envelope" onclick="openEnvelope()" style="
       position:relative;
       width:320px;
@@ -1597,54 +2584,65 @@ function showDecoyLetter() {
         overflow-y:auto;
       ">
         <div id="typedLetter"></div>
-
-        <div id="closeWrap" style="
-          text-align:center;
-          margin-top:20px;
-          opacity:0;
-          transition:opacity 1s ease;
-        ">
-          <button onclick="closeEnvelope()" style="
-            padding:10px 28px;
-            border:none;
-            border-radius:20px;
-            background:#ffd1dc;
-            color:#8b1e1e;
-            cursor:pointer;
-          ">
-            Close
-          </button>
-        </div>
       </div>
 
     </div>
 
-    <p style="position:absolute; bottom:40px; color:#b85b6b;">
+    <!-- Close button OUTSIDE -->
+    <button id="envelopeCloseBtn" onclick="closeEnvelope()" style="
+      position:fixed;
+      bottom:40px;
+      left:50%;
+      transform:translateX(-50%);
+      padding:12px 34px;
+      border:none;
+      border-radius:24px;
+      background:linear-gradient(135deg,#ff7a85,#ff4e63);
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      opacity:0;
+      transition:opacity 0.6s ease;
+      z-index:9999;
+    ">
+      Close
+    </button>
+
+    <p style="position:absolute; bottom:100px; color:#b85b6b;">
       Tap the envelope
     </p>
 
   </div>
   `;
 }
+
 function openEnvelope() {
+  if (letterTypingStarted) return;   // prevent multiple triggers
+  letterTypingStarted = true;
+
   const flap = document.getElementById("flap");
   const letter = document.getElementById("letterContent");
   const envelope = document.getElementById("envelope");
 
+  // Disable further clicks
+  envelope.onclick = null;
+
   // Open flap
   flap.style.transform = "rotateX(180deg)";
 
-  // Start heartbeat glow
+  // Start glow
   envelope.classList.add("envelope-glow");
 
-  // Slide letter out
   setTimeout(() => {
     letter.style.transform = "translateY(0)";
     startTypingLetter();
   }, 300);
 }
 
+
 function startTypingLetter() {
+
   const text = `Dear my love,
 
 I don’t know if words will ever be enough.
@@ -1666,26 +2664,42 @@ It’s a promise.
   const closeWrap = document.getElementById("closeWrap");
   const envelope = document.getElementById("envelope");
 
+  // Reset content
+  element.innerHTML = "";
+
   let i = 0;
 
   function type() {
     if (i < text.length) {
       element.innerHTML += text.charAt(i);
       i++;
-      setTimeout(type, 35);
+      letterTypingTimer = setTimeout(type, 35);
     } else {
-      closeWrap.style.opacity = "1";
+      const closeBtn = document.getElementById("envelopeCloseBtn");
+      if (closeBtn) closeBtn.style.opacity = "1";
 
-      // Stop heartbeat glow after typing
       envelope.classList.remove("envelope-glow");
+      letterTypingTimer = null;
     }
   }
 
   type();
 }
+
 function closeEnvelope() {
-  yesClicked();
+  // Stop typing if still running
+  if (letterTypingTimer) {
+    clearTimeout(letterTypingTimer);
+    letterTypingTimer = null;
+  }
+
+  // Reset state for next open
+  letterTypingStarted = false;
+
+  returnToGiftsPage();
 }
+
+
 
 
 function typeWriter(element, text, speed = 35, callback) {
@@ -1990,8 +3004,10 @@ function closeVerse() {
   if (window.divineDustInterval) {
     clearInterval(window.divineDustInterval);
   }
-  yesClicked();
+  returnToGiftsPage();
 }
+
+
 
 
 /* ✍️ Initial question typing */
@@ -2005,3 +3021,4 @@ window.addEventListener("load", () => {
 
 </body>
 </html>
+x
